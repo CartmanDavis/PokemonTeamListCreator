@@ -355,6 +355,8 @@ function generatePdf(element) {
             }
 
             var name = window['pokes' + chosenLang][nameId];
+            var natureId = NatureTranslator[nature];
+            nature = (natureId !== undefined ? window['natures' + chosenLang][natureId] : null) || nature;
             var ability = window['abilities' + chosenLang][abilityId];
             var item = 'NO ITEM';
             if (itemId != 'NOITEM'){
@@ -372,7 +374,7 @@ function generatePdf(element) {
             doc.setFontSize(12);
             doc.setFont("customFont", 'normal');
             doc.text(name, textX + (i%2) * gapX, pokeY + (Math.floor(i/2)) * gapY);
-
+            doc.text(nature, textX + (i%2) * gapX, teraY + (Math.floor(i/2)) * gapY);
             doc.setFontSize(13);
             doc.setFont("text1", 'normal');
             doc.text("Nature", textXX + (i%2) * gapX, teraY + (Math.floor(i/2)) * gapY, "right");
