@@ -10,6 +10,7 @@ document.getElementById('teamName').value = urlParams.get('team');
 document.getElementById('switchName').value = urlParams.get('switch');
 document.getElementById('playerId').value = urlParams.get('id');
 document.getElementById('birth').value = urlParams.get('dob');
+document.getElementById('supportId').value = urlParams.get('spid');
 if (urlParams.get('age')){
     document.getElementById(urlParams.get('age')).checked = true;
 }
@@ -142,6 +143,7 @@ function generatePdf(element) {
     var switchName = document.getElementById('switchName').value;
     var playerId = document.getElementById('playerId').value;
     var birth = document.getElementById('birth').value;
+    var supportId = document.getElementById('supportId').value;
     var paste = document.getElementById('paste').value;
     var ageDivision = document.querySelector('input[name="ageDivision"]:checked');
     var chosenLang = document.querySelectorAll('input[name="radioLang"]:checked');
@@ -348,6 +350,12 @@ function generatePdf(element) {
                 return;
             }
 
+
+            if (/.{1,}-Mega(-[XYZ]){0,1}/.test(pokes[i].name)) {
+              document.getElementById('error').innerText = `ERROR IN PASTE:\n${pokes[i].name} is a mega evolution!\nChange it to the base form, with a valid ability, holding a mega evolution stone.`;
+              return
+            }
+
             var name = window['pokes' + chosenLang][nameId];
             var teraType;
             if (isChampions) {
@@ -462,20 +470,29 @@ function generatePdf(element) {
         doc.setFontSize(9);
         doc.setFont("text1", 'normal');
         var msg = "Player ID: ";
-        doc.text(140, 43, msg, "right");
-        doc.line(140, 44.5, 180, 44.5);
+        doc.text(140, 40, msg, "right");
+        doc.line(140, 41.5, 190, 41.5);
         doc.setFontSize(13);
         doc.setFont("text2", 'normal');
-        doc.text(playerId, 142, 43);
+        doc.text(playerId, 142, 40);
 
         doc.setFontSize(9);
         doc.setFont("text1", 'normal');
         var msg = "Date of Birth: ";
-        doc.text(140, 51, msg, "right");
-        doc.line(140, 52.5, 180, 52.5);
+        doc.text(140, 47, msg, "right");
+        doc.line(140, 48.5, 190, 48.5);
         doc.setFontSize(13);
         doc.setFont("text2", 'normal');
-        doc.text(birth, 142, 51);
+        doc.text(birth, 142, 47);
+
+        doc.setFontSize(9);
+        doc.setFont("text1", "normal")
+        var msg = "Support ID :"
+        doc.text(140, 54, msg, "right")
+        doc.line(140, 55.5, 190, 55.5)
+        doc.setFontSize(13)
+        doc.setFont("text2", "normal")
+        doc.text(supportId, 142, 54)
 
 
         for (let i = 0; i < 6; i++) {
