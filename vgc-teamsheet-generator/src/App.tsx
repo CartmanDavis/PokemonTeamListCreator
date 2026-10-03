@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { AgeDivisionSelector } from './components/AgeDivisionSelector'
-import { GameSelector } from './components/GameSelector'
 import { LanguageSelector } from './components/LanguageSelector'
 import { PastePanel } from './components/PastePanel'
 import { PlayerDetailsForm } from './components/PlayerDetailsForm'
@@ -9,14 +8,13 @@ import { SheetSelector } from './components/SheetSelector'
 import { Tips } from './components/Tips'
 import { useTeamsheetPrinter } from './hooks/useTeamsheetPrinter'
 import { readUrlDefaults } from './lib/urlParams'
-import type { Game, SheetKind } from './lib/types'
+import type { SheetKind } from './lib/types'
 import './App.css'
 
 const urlDefaults = readUrlDefaults()
 
 function App() {
   const [paste, setPaste] = useState('')
-  const [game, setGame] = useState<Game>('champions')
   const [player, setPlayer] = useState(urlDefaults.player)
   const [ageDivision, setAgeDivision] = useState(urlDefaults.ageDivision)
   const [sheets, setSheets] = useState<SheetKind[]>(['open', 'close'])
@@ -31,7 +29,6 @@ function App() {
 
         <section className="form-area">
           <div className="player-details">
-            <GameSelector value={game} onChange={setGame} />
             <PlayerDetailsForm value={player} onChange={setPlayer} />
           </div>
 
@@ -42,7 +39,7 @@ function App() {
           </div>
 
           <PrintActions
-            onPrint={() => print({ player, paste, game, ageDivision, sheets, lang })}
+            onPrint={() => print({ player, paste, ageDivision, sheets, lang })}
             generating={generating}
             error={error}
           />

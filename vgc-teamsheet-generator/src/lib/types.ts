@@ -1,5 +1,3 @@
-export type Game = 'sv' | 'champions'
-
 export type AgeDivision = 'Junior' | 'Senior' | 'Master'
 
 export const AGE_DIVISIONS: readonly AgeDivision[] = ['Junior', 'Senior', 'Master']
@@ -24,7 +22,6 @@ export interface PlayerInfo {
 export interface TeamsheetOptions {
   player: PlayerInfo
   paste: string
-  game: Game
   ageDivision: AgeDivision
   sheets: SheetKind[]
   lang: Lang

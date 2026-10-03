@@ -19,24 +19,12 @@ export function getNatureModifiers(nature: string): Stats | undefined {
   return natureTable[nature]
 }
 
-export function fillSpread(spread: StatSpread | undefined, fallback: number): Stats {
+export function fillSpread(spread: StatSpread | undefined): Stats {
   const filled = {} as Stats
   for (const stat of STAT_IDS) {
-    filled[stat] = spread?.[stat] ?? fallback
+    filled[stat] = spread?.[stat] ?? 0
   }
   return filled
-}
-
-/** Standard mainline-games stat formula. */
-export function getStats(base: Stats, ivs: Stats, evs: Stats, level: number, nature: Stats): Stats {
-  const stats = {} as Stats
-  for (const stat of STAT_IDS) {
-    const scaled = ((2 * base[stat] + evs[stat] / 4 + ivs[stat]) * level) / 100
-    stats[stat] = stat === 'hp'
-      ? Math.floor(scaled + level + 10)
-      : Math.floor(Math.floor(scaled + 5) * nature[stat])
-  }
-  return stats
 }
 
 /**

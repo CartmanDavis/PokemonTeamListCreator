@@ -16,7 +16,6 @@ import {
   getBaseStats,
   getChampionsStats,
   getNatureModifiers,
-  getStats,
   type Stats,
 } from './stats'
 import { AGE_DIVISIONS, type Lang, type SheetKind, type TeamsheetOptions } from './types'
@@ -54,12 +53,10 @@ const SHEET_ORDER: readonly SheetKind[] = ['close', 'open']
 
 interface TeamsheetEntry {
   name: string
-  /** Tera Type in Scarlet & Violet, Nature in Champions. */
-  secondary: string
+  nature: string
   ability: string
   item: string
   moves: string[]
-  level: number
   /** Only computed when the staff sheet is requested. */
   stats?: Stats
 }
@@ -77,9 +74,7 @@ export async function generateTeamsheet(options: TeamsheetOptions): Promise<void
   ])
 
   const sheets = SHEET_ORDER.filter((sheet) => options.sheets.includes(sheet))
-  const entries = pokemon.map((poke) =>
-    resolveEntry(poke, translations, options.game === 'champions', sheets.includes('close')),
-  )
+  const entries = pokemon.map((poke) => resolveEntry(poke, translations, sheets.includes('close')))
 
   const doc = new jsPDF()
   registerFont(doc, TEAM_FONT, teamFont)
@@ -111,7 +106,6 @@ function capitalizeInput(str: string): string {
 function resolveEntry(
   poke: Pokemon,
   translations: Translations,
-  isChampions: boolean,
   needsStats: boolean,
 ): TeamsheetEntry {
   const base = getBaseStats(poke.name)
@@ -137,11 +131,6 @@ function resolveEntry(
   }
 
   const nature = poke.nature ? capitalizeInput(poke.nature) : 'Serious'
-  const level = poke.level ?? 100
-
-  const secondary = isChampions
-    ? (translate(translations, 'natures', nature) ?? nature)
-    : (poke.teraType && translate(translations, 'types', poke.teraType)) || 'None'
 
   let stats: Stats | undefined
   if (needsStats) {
@@ -149,26 +138,21 @@ function resolveEntry(
     if (!modifiers) {
       throw new TeamsheetError(`ERROR IN PASTE:\nUnknown nature "${nature}" on ${poke.name}.`)
     }
-    const evs = fillSpread(poke.evs, 0)
-    stats = isChampions
-      ? getChampionsStats(base, evs, modifiers)
-      : getStats(base, fillSpread(poke.ivs, 31), evs, level, modifiers)
+    stats = getChampionsStats(base, fillSpread(poke.evs), modifiers)
   }
 
   return {
     name: required('pokes', poke.name, 'Pokémon'),
-    secondary,
+    nature: translate(translations, 'natures', nature) ?? nature,
     ability: required('abilities', poke.ability, 'ability'),
     item: poke.item ? required('items', poke.item, 'item') : 'NO ITEM',
     moves: poke.moves.map((move) => required('moves', move, 'move')),
-    level,
     stats,
   }
 }
 
 function drawSheet(doc: jsPDF, sheet: SheetKind, entries: TeamsheetEntry[], options: TeamsheetOptions) {
   const { player } = options
-  const isChampions = options.game === 'champions'
 
   doc.setFontSize(7)
   doc.setFont(LABEL_REGULAR, 'normal')
@@ -241,7 +225,7 @@ function drawSheet(doc: jsPDF, sheet: SheetKind, entries: TeamsheetEntry[], opti
     }
 
     row('Pokémon', entry.name, top, 12)
-    row(isChampions ? 'Nature' : 'Tera Type', entry.secondary, top + 9.5)
+    row('Nature', entry.nature, top + 9.5)
     row('Ability', entry.ability, top + 18)
     row('Held Item', entry.item, top + 26)
     entry.moves.forEach((move, j) => row(`Move ${j + 1}`, move, top + 34 + 8 * j))
@@ -250,9 +234,6 @@ function drawSheet(doc: jsPDF, sheet: SheetKind, entries: TeamsheetEntry[], opti
       const statX = 100 + 99 * column
       doc.setFontSize(11)
       doc.setFont(TEAM_FONT, 'normal')
-      if (!isChampions) {
-        doc.text(entry.level.toString(), statX, top + 9.5, { align: 'right' })
-      }
       STAT_IDS.forEach((stat, j) => {
         doc.text(entry.stats![stat].toString(), statX, top + 19 + 8 * j, { align: 'right' })
       })
@@ -281,7 +262,7 @@ function drawOpenHeader(doc: jsPDF) {
   )
 }
 
-function drawStaffHeader(doc: jsPDF, { player, game }: TeamsheetOptions) {
+function drawStaffHeader(doc: jsPDF, { player }: TeamsheetOptions) {
   doc.setFontSize(13)
   doc.setFont(LABEL_BOLD, 'normal')
   doc.text('1 of 2: ', 77, 18)
@@ -321,9 +302,6 @@ function drawStaffHeader(doc: jsPDF, { player, game }: TeamsheetOptions) {
     const x = 6.5 + 99 * (i % 2)
     const y = 59.5 + 70 * Math.floor(i / 2)
     doc.line(x + 80, y + 12, x + 80, y + 68)
-    if (game !== 'champions') {
-      doc.text('Level', x + 81, y + 14)
-    }
     statLabels.forEach((label, j) => doc.text(label, x + 81, y + 22 + 8 * j))
   }
 }
