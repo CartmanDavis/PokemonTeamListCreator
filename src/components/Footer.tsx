@@ -15,7 +15,7 @@ export function Footer() {
           </a>
         </li>
         <li>
-          Made by{' '}
+          Forked and maintained by{' '}
           <a href={X_URL} target="_blank" rel="noreferrer">
             @CartmanCodes
           </a>
