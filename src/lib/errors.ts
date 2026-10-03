@@ -8,3 +8,11 @@ export class TeamsheetError extends Error {
     this.issues = issues
   }
 }
+
+/** A screenshot that can't be read as a Battle Team, with a message meant to be shown to the user. */
+export class ScreenshotError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'ScreenshotError'
+  }
+}

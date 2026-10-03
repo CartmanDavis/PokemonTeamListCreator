@@ -2,7 +2,7 @@ import './Footer.css'
 
 const REPO_URL = 'https://github.com/CartmanDavis/PokemonTeamListCreator'
 const ORIGINAL_REPO_URL = 'https://github.com/DhSufi/PokemonTeamListCreator'
-const X_URL = 'https://x.com/CartmanCodes'
+export const X_URL = 'https://x.com/CartmanCodes'
 
 export function Footer() {
   return (

@@ -1,0 +1,82 @@
+.team-check-hint {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.team-check-disclaimer {
+  margin: 0;
+  padding: 10px 14px;
+  border-left: 3px solid #f5c451;
+  border-radius: 4px;
+  background: rgba(245, 196, 81, 0.08);
+  line-height: 1.5;
+}
+
+.team-check-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.team-check-controls input {
+  flex: 1;
+  min-width: 0;
+  color: var(--muted);
+  font: inherit;
+}
+
+.team-check-controls button:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.team-check-results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.team-check-summary {
+  margin: 0 0 4px;
+  color: var(--error);
+}
+
+.team-check-summary.ok {
+  color: #6fe3a0;
+}
+
+.team-check-pokemon {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.team-check-pokemon summary {
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.team-check-pokemon table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.team-check-pokemon th,
+.team-check-pokemon td {
+  padding: 6px 14px;
+  border-top: 1px solid var(--border);
+  text-align: left;
+  font-weight: normal;
+}
+
+.team-check-pokemon thead th,
+.team-check-pokemon tbody th {
+  color: var(--label);
+}
+
+.team-check-pokemon tr.mismatch td {
+  color: var(--error);
+}

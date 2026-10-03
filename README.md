@@ -20,3 +20,4 @@ Libraries used:
 
 - [Koffing](https://github.com/itsjavi/koffing) for parsing Showdown pastes
 - [jsPDF](https://github.com/parallax/jsPDF) for generating the PDFs
+- [Tesseract.js](https://github.com/naptha/tesseract.js) for reading text from game screenshots
