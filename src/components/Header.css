@@ -1,0 +1,11 @@
+.site-header h1 {
+  width: fit-content;
+  /* fit-content keeps the gradient to the width of the text. */
+  margin: 0 auto;
+  text-align: center;
+  background: var(--gradient);
+  background-clip: text;
+  color: transparent;
+  font-size: 28px;
+  font-weight: bold;
+}

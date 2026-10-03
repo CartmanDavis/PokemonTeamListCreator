@@ -1,0 +1,82 @@
+.info-tip {
+  position: relative;
+}
+
+.info-tip-button {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1.5px solid var(--muted);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  font-style: italic;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.info-tip-button:hover,
+.info-tip-button[aria-expanded='true'] {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.info-tip-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.info-tip-bubble {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: -8px;
+  z-index: 10;
+  box-sizing: border-box;
+  width: min(320px, calc(100vw - 32px));
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Arrow pointing at the button */
+.info-tip-bubble::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 13px;
+  width: 10px;
+  height: 10px;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  background: var(--bg);
+  transform: rotate(45deg);
+}
+
+.info-tip-bubble[hidden] {
+  display: none;
+}
+
+.info-tip-bubble p,
+.info-tip-bubble ol,
+.info-tip-bubble ul {
+  margin: 0;
+}
+
+.info-tip-bubble > * + * {
+  margin-top: 8px;
+}
+
+.info-tip-bubble ol,
+.info-tip-bubble ul {
+  padding-left: 20px;
+}

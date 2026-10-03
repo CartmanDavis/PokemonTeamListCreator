@@ -1,0 +1,46 @@
+.player-details .remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.player-details .remember input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.player-summary {
+  margin: 0;
+  color: var(--muted);
+}
+
+.player-details-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 45px 32px;
+  /* Room for the first row's floating labels. */
+  padding-top: 22px;
+}
+
+.player-details-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.player-details-footer .option-group {
+  flex: 0 1 360px;
+}
+
+@media (max-width: 600px) {
+  .player-details-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

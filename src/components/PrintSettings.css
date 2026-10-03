@@ -1,0 +1,14 @@
+.print-settings-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.print-settings-row .option-group {
+  flex: 1 1 320px;
+}
+
+.print-settings-row .language-selector {
+  flex: 0 1 220px;
+}

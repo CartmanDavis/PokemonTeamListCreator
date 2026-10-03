@@ -1,30 +1,22 @@
-# PokemonTeamListCreator
-Creates an Open Team List/Sheet and Close Team List/Sheet from Pokémon Showdown paste
+# VGC Teamsheet Generator
 
-Update March 2024
-- Added multi language list. Thanks a lot to Aurélien Soula (Axior)
+Generates Open and Staff Team Lists for Pokémon VGC (Pokémon Champions) from a Pokémon Showdown paste. Everything runs in the browser.
 
-Update December 2023:
-- Added Pokémon from The Indigo Disk
-- Added the ability to pass URL parameters ([Thanks to Joe Zhu](https://twitter.com/joezhuu)):
-  - player=text
-  - trainer=text
-  - team=text
-  - switch=text
-  - id=text
-  - dob=text (recommended use -)
-  - age=Junior, Senior or Master
-  - lang=chs, cht, en, es, fre, ger, ita, jpn, jpnkanji or kor
+## Development
 
-Update July 2023:
-- Added Pokémon for Regulation D
-- Improved file size (about x50 less disk space)
-  
-Pending: Special characters not allowed (for example ★)
+```sh
+pnpm install
+pnpm dev      # start dev server
+pnpm build    # type-check and build to dist/
+pnpm lint     # run oxlint
+pnpm test     # run unit tests
+```
+
+## Credits
+
+Based on [DhSufi's Pokémon Team List Creator](https://github.com/DhSufi/PokemonTeamListCreator), with contributions to the original from Aurélien Soula (Axior) and [Joe Zhu](https://twitter.com/joezhuu).
 
 Libraries used:
 
-https://github.com/itsjavi/koffing
-
-
-https://github.com/parallax/jsPDF
+- [Koffing](https://github.com/itsjavi/koffing) for parsing Showdown pastes
+- [jsPDF](https://github.com/parallax/jsPDF) for generating the PDFs

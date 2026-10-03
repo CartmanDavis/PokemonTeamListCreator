@@ -1,0 +1,54 @@
+.text-field {
+  position: relative;
+}
+
+.text-field input {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 100%;
+  padding-bottom: 9px;
+  border: none;
+  border-bottom: 3px solid var(--muted);
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 15pt;
+  text-indent: 4px;
+}
+
+.text-field label {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  z-index: 0;
+  color: var(--label);
+  font-size: 15pt;
+  transition: 0.2s;
+}
+
+.text-field input:not(:placeholder-shown) ~ label,
+.text-field input:focus ~ label {
+  top: -22px;
+  font-size: 15px;
+}
+
+.text-field input:focus ~ label {
+  color: var(--accent);
+}
+
+.text-field input:focus {
+  border-image: var(--gradient) 1;
+}
+
+.text-field.has-help input {
+  padding-right: 32px;
+}
+
+.text-field > .info-tip {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  z-index: 2;
+}
