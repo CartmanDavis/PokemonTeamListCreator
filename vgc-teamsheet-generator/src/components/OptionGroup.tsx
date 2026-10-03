@@ -9,7 +9,10 @@ interface OptionGroupProps<T extends string> {
   name: string
   label: string
   options: readonly Option<T>[]
-  /** `radio` allows a single selection, `checkbox` allows any number. */
+  /**
+   * `radio` allows a single selection and renders as a segmented control.
+   * `checkbox` allows any number and renders as checkbox tiles.
+   */
   type?: 'radio' | 'checkbox'
   isSelected: (value: T) => boolean
   onToggle: (value: T) => void
@@ -26,25 +29,22 @@ export function OptionGroup<T extends string>({
   className,
 }: OptionGroupProps<T>) {
   return (
-    <fieldset className={['option-group', className].filter(Boolean).join(' ')}>
+    <fieldset className={['option-group', `option-group--${type}`, className].filter(Boolean).join(' ')}>
       <legend className="visually-hidden">{label}</legend>
       {options.map((option) => {
         const selected = isSelected(option.value)
         return (
           <label key={option.value} className={selected ? 'selected' : undefined}>
             <input
-              className="visually-hidden"
+              // Radios render as a segmented control; checkboxes keep the native box.
+              className={type === 'radio' ? 'visually-hidden' : undefined}
               type={type}
               name={name}
               value={option.value}
               checked={selected}
               onChange={() => onToggle(option.value)}
             />
-            <span className="option">
-              <span className="chroma">
-                <span>{option.label}</span>
-              </span>
-            </span>
+            {option.label}
           </label>
         )
       })}
