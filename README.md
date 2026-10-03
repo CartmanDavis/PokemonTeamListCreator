@@ -9,6 +9,7 @@ pnpm install
 pnpm dev      # start dev server
 pnpm build    # type-check and build to dist/
 pnpm lint     # run oxlint
+pnpm test     # run unit tests
 ```
 
 ## Credits
