@@ -14,7 +14,7 @@ pnpm test     # run unit tests
 
 ## Credits
 
-Based on [DhSufi's Pokémon Team List Creator](https://github.com/DhSufi/PokemonTeamListCreator), with contributions to the original from Aurélien Soula (Axior) and [Joe Zhu](https://twitter.com/joezhuu).
+Based on [DhSufi's Pokémon Team List Creator](https://github.com/DhSufi/PokemonTeamListCreator).
 
 Libraries used:
 
