@@ -5,6 +5,7 @@ import { PastePanel } from './components/PastePanel'
 import { PlayerDetailsForm } from './components/PlayerDetailsForm'
 import { PrintActions } from './components/PrintActions'
 import { SheetSelector } from './components/SheetSelector'
+import { usePlayerInfo } from './hooks/usePlayerInfo'
 import { useTeamsheetPrinter } from './hooks/useTeamsheetPrinter'
 import { readUrlDefaults } from './lib/urlParams'
 import type { SheetKind } from './lib/types'
@@ -14,34 +15,34 @@ const urlDefaults = readUrlDefaults()
 
 function App() {
   const [paste, setPaste] = useState('')
-  const [player, setPlayer] = useState(urlDefaults.player)
+  const { player, setPlayer, remember, setRemember } = usePlayerInfo(urlDefaults.player)
   const [ageDivision, setAgeDivision] = useState(urlDefaults.ageDivision)
   const [sheets, setSheets] = useState<SheetKind[]>(['open', 'close'])
   const [lang, setLang] = useState(urlDefaults.lang)
   const { print, error, generating } = useTeamsheetPrinter()
 
   return (
-    <div className="layout">
-      <PastePanel value={paste} onChange={setPaste} />
+    <main className="app">
+      <PlayerDetailsForm value={player} onChange={setPlayer} remember={remember} onRememberChange={setRemember} />
 
-      <section className="form-area">
-        <div className="player-details">
-          <PlayerDetailsForm value={player} onChange={setPlayer} />
-        </div>
+      <div className="layout">
+        <PastePanel value={paste} onChange={setPaste} />
 
-        <div className="choices">
-          <AgeDivisionSelector value={ageDivision} onChange={setAgeDivision} />
-          <SheetSelector value={sheets} onChange={setSheets} />
-          <LanguageSelector value={lang} onChange={setLang} />
-        </div>
+        <section className="form-area">
+          <div className="choices">
+            <AgeDivisionSelector value={ageDivision} onChange={setAgeDivision} />
+            <SheetSelector value={sheets} onChange={setSheets} />
+            <LanguageSelector value={lang} onChange={setLang} />
+          </div>
 
-        <PrintActions
-          onPrint={() => print({ player, paste, ageDivision, sheets, lang })}
-          generating={generating}
-          error={error}
-        />
-      </section>
-    </div>
+          <PrintActions
+            onPrint={() => print({ player, paste, ageDivision, sheets, lang })}
+            generating={generating}
+            error={error}
+          />
+        </section>
+      </div>
+    </main>
   )
 }
 

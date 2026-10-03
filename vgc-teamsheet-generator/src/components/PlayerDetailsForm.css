@@ -1,0 +1,49 @@
+.player-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.player-details header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px 20px;
+}
+
+.player-details h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.player-details .remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.player-details .remember input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.player-details-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 45px 40px;
+  /* Room for the first row's floating labels. */
+  padding-top: 22px;
+}
+
+@media (max-width: 720px) {
+  .player-details-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

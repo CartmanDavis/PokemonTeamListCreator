@@ -19,6 +19,16 @@ export interface PlayerInfo {
   supportId: string
 }
 
+export const EMPTY_PLAYER: PlayerInfo = {
+  playerName: '',
+  trainerName: '',
+  teamName: '',
+  switchName: '',
+  playerId: '',
+  birth: '',
+  supportId: '',
+}
+
 export interface TeamsheetOptions {
   player: PlayerInfo
   paste: string

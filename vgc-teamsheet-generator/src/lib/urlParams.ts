@@ -14,7 +14,8 @@ const PLAYER_PARAMS: Record<keyof PlayerInfo, string> = {
 }
 
 export interface UrlDefaults {
-  player: PlayerInfo
+  /** Only the fields present in the URL. */
+  player: Partial<PlayerInfo>
   ageDivision: AgeDivision
   lang: Lang
 }
@@ -22,9 +23,10 @@ export interface UrlDefaults {
 export function readUrlDefaults(search = window.location.search): UrlDefaults {
   const params = new URLSearchParams(search)
 
-  const player = {} as PlayerInfo
+  const player: Partial<PlayerInfo> = {}
   for (const [key, param] of Object.entries(PLAYER_PARAMS) as [keyof PlayerInfo, string][]) {
-    player[key] = params.get(param) ?? ''
+    const value = params.get(param)
+    if (value !== null) player[key] = value
   }
 
   const age = params.get('age')

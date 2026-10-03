@@ -1,5 +1,7 @@
+import { useId } from 'react'
 import type { PlayerInfo } from '../lib/types'
 import { TextField } from './TextField'
+import './PlayerDetailsForm.css'
 
 const FIELDS: {
   key: keyof PlayerInfo
@@ -30,17 +32,34 @@ const FIELDS: {
 interface PlayerDetailsFormProps {
   value: PlayerInfo
   onChange: (value: PlayerInfo) => void
+  remember: boolean
+  onRememberChange: (remember: boolean) => void
 }
 
-export function PlayerDetailsForm({ value, onChange }: PlayerDetailsFormProps) {
-  return FIELDS.map(({ key, label, maxLength, help }) => (
-    <TextField
-      key={key}
-      label={label}
-      maxLength={maxLength}
-      help={help}
-      value={value[key]}
-      onChange={(field) => onChange({ ...value, [key]: field })}
-    />
-  ))
+export function PlayerDetailsForm({ value, onChange, remember, onRememberChange }: PlayerDetailsFormProps) {
+  const headingId = useId()
+  return (
+    <section className="player-details" aria-labelledby={headingId}>
+      <header>
+        <h2 id={headingId}>Player Info</h2>
+        <label className="remember" title="Stored only in this browser">
+          <input type="checkbox" checked={remember} onChange={(event) => onRememberChange(event.target.checked)} />
+          Save my info for next time
+        </label>
+      </header>
+
+      <div className="player-details-fields">
+        {FIELDS.map(({ key, label, maxLength, help }) => (
+          <TextField
+            key={key}
+            label={label}
+            maxLength={maxLength}
+            help={help}
+            value={value[key]}
+            onChange={(field) => onChange({ ...value, [key]: field })}
+          />
+        ))}
+      </div>
+    </section>
+  )
 }
