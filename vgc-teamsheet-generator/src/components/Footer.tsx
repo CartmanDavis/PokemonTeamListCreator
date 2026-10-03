@@ -21,11 +21,10 @@ export function Footer() {
           </a>
         </li>
         <li>
-          Thanks to{' '}
+          Based on{' '}
           <a href={ORIGINAL_REPO_URL} target="_blank" rel="noreferrer">
-            DhSufi
-          </a>{' '}
-          for the original
+            DhSufi's Team List Generator
+          </a>
         </li>
       </ul>
     </footer>
