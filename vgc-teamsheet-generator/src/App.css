@@ -1,0 +1,231 @@
+.banner {
+  margin: 0 0 20px;
+}
+
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+.paste-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.paste {
+  box-sizing: border-box;
+  width: 500px;
+  max-width: 100%;
+  min-height: 720px;
+  padding: 5px;
+  border-radius: 5px;
+  font-family: Montserrat, system-ui, sans-serif;
+}
+
+.form-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 60px;
+  width: 500px;
+  max-width: 100%;
+  margin-top: 50px;
+}
+
+.player-details {
+  display: flex;
+  flex-direction: column;
+  gap: 45px;
+  width: 100%;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.tips {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 320px;
+  margin-top: 50px;
+}
+
+.tips p {
+  margin: 0;
+}
+
+/* Option groups: gradient-bordered pills, dimmed until selected */
+
+.optionsContainer {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 10px;
+  margin: 0;
+  padding: 7px;
+  border: none;
+  border-radius: 5px;
+  background: white;
+}
+
+.choices .optionsContainer {
+  width: 360px;
+  box-sizing: border-box;
+}
+
+.optionsContainer.sheets label {
+  flex: 1;
+}
+
+.optionsContainer.languages {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 7px;
+}
+
+.optionsContainer label {
+  cursor: pointer;
+  opacity: 0.3;
+  transition: opacity 0.2s ease;
+}
+
+.optionsContainer label:hover {
+  opacity: 0.7;
+}
+
+.optionsContainer label.selected {
+  opacity: 1;
+}
+
+.optionsContainer label:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 5px;
+}
+
+.optionsContainer .option {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 2px;
+  border-radius: 5px;
+  background: var(--gradient);
+}
+
+.optionsContainer .chroma {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 7px;
+  border-radius: 5px;
+  background-color: rgba(5, 6, 45, 1);
+  color: var(--muted);
+  transition: background 0.2s ease;
+}
+
+.optionsContainer .chroma:hover,
+.optionsContainer label.selected .chroma {
+  background-color: rgba(5, 6, 45, 0);
+  color: white;
+}
+
+/* Text fields with floating labels */
+
+.text-field {
+  position: relative;
+}
+
+.text-field input {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 100%;
+  padding-bottom: 9px;
+  border: none;
+  border-bottom: 3px solid var(--muted);
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 15pt;
+  text-indent: 4px;
+}
+
+.text-field label {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  z-index: 0;
+  color: var(--label);
+  font-size: 15pt;
+  transition: 0.2s;
+}
+
+.text-field input:not(:placeholder-shown) ~ label,
+.text-field input:focus ~ label {
+  top: -22px;
+  font-size: 15px;
+}
+
+.text-field input:focus ~ label {
+  color: var(--accent);
+}
+
+.text-field input:focus {
+  border-image: var(--gradient) 1;
+}
+
+.text-field a {
+  position: absolute;
+  right: 0;
+  margin-top: 5px;
+}
+
+/* Print button */
+
+.print {
+  width: 230px;
+  height: 60px;
+  border: none;
+  border-radius: 8px;
+  background: var(--gradient);
+  background-size: 200% 200%;
+  color: white;
+  font: inherit;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-size 0.3s ease;
+}
+
+.print:hover:not(:disabled) {
+  background-size: 100% 100%;
+}
+
+.print:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.error {
+  min-height: 1.5em;
+  margin: 0;
+  color: var(--error);
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+  white-space: pre-line;
+}
