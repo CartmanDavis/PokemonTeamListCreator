@@ -14,15 +14,17 @@ export interface PlayerInfo {
   playerId: string
   birth: string
   supportId: string
+  ageDivision: AgeDivision
 }
 
-export const EMPTY_PLAYER: PlayerInfo = {
+export const DEFAULT_PLAYER: PlayerInfo = {
   playerName: '',
   trainerName: '',
   switchName: '',
   playerId: '',
   birth: '',
   supportId: '',
+  ageDivision: 'Master',
 }
 
 export interface TeamsheetOptions {
@@ -30,7 +32,6 @@ export interface TeamsheetOptions {
   /** Battle Team number or name, as shown in the game. */
   teamName: string
   paste: string
-  ageDivision: AgeDivision
   sheets: SheetKind[]
   lang: Lang
 }

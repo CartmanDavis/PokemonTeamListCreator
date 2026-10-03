@@ -1,10 +1,11 @@
 import { useId } from 'react'
 import type { PlayerInfo } from '../lib/types'
+import { AgeDivisionSelector } from './AgeDivisionSelector'
 import { TextField } from './TextField'
 import './PlayerDetailsForm.css'
 
 const FIELDS: {
-  key: keyof PlayerInfo
+  key: Exclude<keyof PlayerInfo, 'ageDivision'>
   label: string
   maxLength?: number
   help?: { href: string; text: string }
@@ -59,6 +60,11 @@ export function PlayerDetailsForm({ value, onChange, remember, onRememberChange 
           />
         ))}
       </div>
+
+      <AgeDivisionSelector
+        value={value.ageDivision}
+        onChange={(ageDivision) => onChange({ ...value, ageDivision })}
+      />
     </section>
   )
 }

@@ -204,7 +204,7 @@ function drawSheet(doc: jsPDF, sheet: SheetKind, entries: TeamsheetEntry[], opti
     }
   }
 
-  const divisionX = 154 + 21 * AGE_DIVISIONS.indexOf(options.ageDivision)
+  const divisionX = 154 + 21 * AGE_DIVISIONS.indexOf(player.ageDivision)
   doc.setLineWidth(1)
   doc.line(divisionX, 29, divisionX + 6, 35)
   doc.line(divisionX + 6, 29, divisionX, 35)

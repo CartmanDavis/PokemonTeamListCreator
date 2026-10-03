@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { clearSavedPlayer, loadSavedPlayer, savePlayer } from '../lib/savedPlayer'
-import { EMPTY_PLAYER, type PlayerInfo } from '../lib/types'
+import { DEFAULT_PLAYER, type PlayerInfo } from '../lib/types'
 
 /** Player details, optionally remembered in this browser for next time. */
 export function usePlayerInfo() {
   const [initial] = useState(() => {
     const saved = loadSavedPlayer()
-    return { player: { ...EMPTY_PLAYER, ...saved }, remember: saved !== null }
+    return { player: { ...DEFAULT_PLAYER, ...saved }, remember: saved !== null }
   })
   const [player, setPlayer] = useState<PlayerInfo>(initial.player)
   const [remember, setRemember] = useState(initial.remember)

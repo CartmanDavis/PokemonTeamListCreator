@@ -1,4 +1,4 @@
-import { EMPTY_PLAYER, type PlayerInfo } from './types'
+import { AGE_DIVISIONS, DEFAULT_PLAYER, type AgeDivision, type PlayerInfo } from './types'
 
 const STORAGE_KEY = 'vgc-teamsheet:player'
 
@@ -14,14 +14,19 @@ export function loadSavedPlayer(): Partial<PlayerInfo> | null {
     if (typeof parsed !== 'object' || parsed === null) return null
 
     const player: Partial<PlayerInfo> = {}
-    for (const key of Object.keys(EMPTY_PLAYER) as (keyof PlayerInfo)[]) {
+    for (const key of Object.keys(DEFAULT_PLAYER) as (keyof PlayerInfo)[]) {
       const value = (parsed as Record<string, unknown>)[key]
-      if (typeof value === 'string') player[key] = value
+      if (isValidField(key, value)) (player as Record<string, string>)[key] = value
     }
     return player
   } catch {
     return null
   }
+}
+
+function isValidField(key: keyof PlayerInfo, value: unknown): value is string {
+  if (typeof value !== 'string') return false
+  return key !== 'ageDivision' || AGE_DIVISIONS.includes(value as AgeDivision)
 }
 
 export function savePlayer(player: PlayerInfo) {

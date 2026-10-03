@@ -12,12 +12,6 @@
   gap: 10px 20px;
 }
 
-.player-details h2 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 500;
-}
-
 .player-details .remember {
   display: flex;
   align-items: center;
@@ -34,6 +28,12 @@
   cursor: pointer;
 }
 
+.player-details .option-group {
+  width: 360px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 .player-details-fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -43,7 +43,13 @@
 }
 
 @media (max-width: 720px) {
-  .player-details-fields {
+  .player-details .option-group {
+  width: 360px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.player-details-fields {
     grid-template-columns: minmax(0, 1fr);
   }
 }

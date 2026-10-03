@@ -1,0 +1,11 @@
+.print-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.print-settings .option-group {
+  width: 360px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
