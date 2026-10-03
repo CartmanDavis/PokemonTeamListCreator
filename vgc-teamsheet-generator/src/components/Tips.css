@@ -1,0 +1,11 @@
+.tips {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 320px;
+  margin-top: 50px;
+}
+
+.tips p {
+  margin: 0;
+}

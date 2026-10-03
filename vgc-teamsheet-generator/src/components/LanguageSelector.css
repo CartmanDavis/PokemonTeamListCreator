@@ -1,0 +1,5 @@
+.language-selector {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 7px;
+}

@@ -1,3 +1,5 @@
+import './OptionGroup.css'
+
 export interface Option<T extends string> {
   value: T
   label: string
@@ -24,7 +26,7 @@ export function OptionGroup<T extends string>({
   className,
 }: OptionGroupProps<T>) {
   return (
-    <fieldset className={['optionsContainer', className].filter(Boolean).join(' ')}>
+    <fieldset className={['option-group', className].filter(Boolean).join(' ')}>
       <legend className="visually-hidden">{label}</legend>
       {options.map((option) => {
         const selected = isSelected(option.value)

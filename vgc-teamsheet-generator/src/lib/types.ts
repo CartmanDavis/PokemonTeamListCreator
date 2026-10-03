@@ -9,6 +9,8 @@ export type SheetKind = 'open' | 'close'
 
 export type Lang = 'Cht' | 'Chs' | 'En' | 'Es' | 'Fre' | 'Ger' | 'Ita' | 'Jpn' | 'Kor'
 
+export const LANGS: readonly Lang[] = ['Cht', 'Chs', 'En', 'Es', 'Fre', 'Ger', 'Ita', 'Jpn', 'Kor']
+
 export interface PlayerInfo {
   playerName: string
   trainerName: string

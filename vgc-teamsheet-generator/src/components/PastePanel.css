@@ -1,0 +1,16 @@
+.paste-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.paste-panel textarea {
+  box-sizing: border-box;
+  width: 500px;
+  max-width: 100%;
+  min-height: 720px;
+  padding: 5px;
+  border-radius: 5px;
+  font-family: Montserrat, system-ui, sans-serif;
+}

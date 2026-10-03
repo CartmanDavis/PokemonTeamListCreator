@@ -1,0 +1,56 @@
+.option-group {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 10px;
+  margin: 0;
+  padding: 7px;
+  border: none;
+  border-radius: 5px;
+  background: white;
+}
+
+.option-group label {
+  cursor: pointer;
+  opacity: 0.3;
+  transition: opacity 0.2s ease;
+}
+
+.option-group label:hover {
+  opacity: 0.7;
+}
+
+.option-group label.selected {
+  opacity: 1;
+}
+
+.option-group label:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 5px;
+}
+
+.option-group .option {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 2px;
+  border-radius: 5px;
+  background: var(--gradient);
+}
+
+.option-group .chroma {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 7px;
+  border-radius: 5px;
+  background-color: rgba(5, 6, 45, 1);
+  color: var(--muted);
+  transition: background 0.2s ease;
+}
+
+.option-group .chroma:hover,
+.option-group label.selected .chroma {
+  background-color: rgba(5, 6, 45, 0);
+  color: white;
+}
