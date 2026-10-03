@@ -15,7 +15,7 @@ const LANGUAGES: Option<Lang>[] = [
 ]
 
 interface LanguageSelectorProps {
-  value: Lang | null
+  value: Lang
   onChange: (value: Lang) => void
 }
 

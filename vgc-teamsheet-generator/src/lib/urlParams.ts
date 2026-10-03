@@ -16,7 +16,7 @@ const PLAYER_PARAMS: Record<keyof PlayerInfo, string> = {
 export interface UrlDefaults {
   player: PlayerInfo
   ageDivision: AgeDivision
-  lang: Lang | null
+  lang: Lang
 }
 
 export function readUrlDefaults(search = window.location.search): UrlDefaults {
@@ -34,6 +34,6 @@ export function readUrlDefaults(search = window.location.search): UrlDefaults {
   return {
     player,
     ageDivision: AGE_DIVISIONS.find((d) => d === age) ?? 'Master',
-    lang: LANGS.find((l) => l.toLowerCase() === lang) ?? null,
+    lang: LANGS.find((l) => l.toLowerCase() === lang) ?? 'En',
   }
 }
