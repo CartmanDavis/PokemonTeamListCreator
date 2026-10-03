@@ -62,53 +62,32 @@ export function TeamCheck({ paste }: TeamCheckProps) {
   )
 }
 
+/** What the game shows for each Pokémon, with any warnings beside the field they're about. */
 export function TeamCheckResults({ reports }: { reports: PokemonReport[] }) {
-  const problems = reports.reduce((sum, report) => sum + report.checks.filter((c) => !c.ok).length, 0)
   return (
     <div className="team-check-results">
-      <p className={problems === 0 ? 'team-check-summary ok' : 'team-check-summary'} role="status">
-        {problems === 0
-          ? 'Your team is valid. This tool can make mistakes. Be sure to double check!'
-          : `${problems} ${problems === 1 ? 'error' : 'errors'}`}
-      </p>
-      {reports.map((report, i) => {
-        const wrong = report.checks.filter((c) => !c.ok)
-        return (
-          <details key={i} className="team-check-pokemon" open={wrong.length > 0}>
-            <summary>
-              <span aria-hidden="true">{wrong.length === 0 ? '✓' : '✗'}</span> {report.name}
-              {wrong.length > 0 && ` (${wrong.length} ${wrong.length === 1 ? 'error' : 'errors'})`}
-            </summary>
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col" />
-                  <th scope="col">Paste</th>
-                  <th scope="col">Game</th>
+      {reports.map((report, i) => (
+        <section key={i} className="team-check-pokemon" aria-label={report.name}>
+          <h3>{report.name}</h3>
+          <table>
+            <tbody>
+              {report.checks.map((c, i) => (
+                <tr key={i}>
+                  <th scope="row">{c.label}</th>
+                  <td>
+                    <Value text={c.found} detail={c.foundDetail} />
+                    {c.note && (
+                      <span className="team-check-note" role="img" aria-label={c.note} title={c.note}>
+                        !
+                      </span>
+                    )}
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {report.checks.map((c, i) => (
-                  <tr key={i} className={c.ok ? undefined : 'mismatch'}>
-                    <th scope="row">{c.label}</th>
-                    <td>
-                      <Value text={c.expected} detail={c.expectedDetail} />
-                    </td>
-                    <td>
-                      <Value text={c.found} detail={c.foundDetail} />
-                      {c.note && (
-                        <span className="team-check-note" role="img" aria-label={c.note} title={c.note}>
-                          !
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </details>
-        )
-      })}
+              ))}
+            </tbody>
+          </table>
+        </section>
+      ))}
     </div>
   )
 }

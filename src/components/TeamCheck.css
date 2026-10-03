@@ -33,18 +33,9 @@
 }
 
 .team-check-results {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.team-check-summary {
-  margin: 0 0 4px;
-  color: var(--error);
-}
-
-.team-check-summary.ok {
-  color: #6fe3a0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
 }
 
 .team-check-pokemon {
@@ -53,9 +44,10 @@
   background: var(--bg);
 }
 
-.team-check-pokemon summary {
+.team-check-pokemon h3 {
+  margin: 0;
   padding: 10px 14px;
-  cursor: pointer;
+  font-size: 16px;
 }
 
 .team-check-pokemon table {
@@ -72,13 +64,10 @@
   font-weight: normal;
 }
 
-.team-check-pokemon thead th,
-.team-check-pokemon tbody th {
+.team-check-pokemon th {
+  width: 1%;
   color: var(--label);
-}
-
-.team-check-pokemon tr.mismatch td {
-  color: var(--error);
+  white-space: nowrap;
 }
 
 .team-check-number {

@@ -1,54 +1,38 @@
 // @vitest-environment jsdom
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { TeamCheckResults } from './TeamCheck'
 
 describe('TeamCheckResults', () => {
-  it('opens the Pokémon with problems and counts them', () => {
+  it('shows what the game has for each Pokémon', () => {
     render(
       <TeamCheckResults
         reports={[
-          { gameSlot: 0, name: 'Garchomp', checks: [{ label: 'Item', expected: 'Life Orb', found: 'Life Orb', ok: true }] },
+          { gameSlot: 0, name: 'Garchomp', checks: [{ label: 'Item', expected: 'Choice Scarf', found: 'Life Orb', ok: false }] },
           {
             gameSlot: 1,
             name: 'Charizard',
-            checks: [
-              { label: 'Ability', expected: 'Solar Power', found: 'Blaze', ok: false },
-              { label: 'Spe', expected: '19', expectedDetail: '139', found: '20', foundDetail: '140', ok: false },
-            ],
+            checks: [{ label: 'Spe', expected: '19', expectedDetail: '139', found: '20', foundDetail: '140', ok: false }],
           },
         ]}
       />,
     )
-    expect(screen.getByRole('status')).toHaveTextContent(/^2 errors$/)
-    expect(screen.getByText(/Garchomp/).closest('details')).not.toHaveAttribute('open')
-    expect(screen.getByText(/Charizard/).closest('details')).toHaveAttribute('open')
-    expect(screen.getByText(/Charizard/)).toHaveTextContent('Charizard (2 errors)')
-    expect(screen.getByRole('row', { name: 'Ability Solar Power Blaze' })).toHaveClass('mismatch')
-    expect(screen.getByRole('row', { name: 'Spe 19 (139) 20 (140)' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Garchomp' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'Garchomp' })).toHaveTextContent('ItemLife Orb')
+    expect(screen.getByRole('row', { name: 'Spe 20 (140)' })).toBeInTheDocument()
+    expect(screen.queryByText('Choice Scarf')).not.toBeInTheDocument()
   })
 
-  it('shows notes', () => {
+  it('shows notes beside their field', () => {
     const checks = [{ label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: 'Inferred from species stats' }]
     render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks }]} />)
-    expect(screen.getByRole('img', { name: 'Inferred from species stats' })).toHaveAttribute('title', 'Inferred from species stats')
+    const note = within(screen.getByRole('row', { name: /^Pokémon Garchomp/ })).getByRole('img', { name: 'Inferred from species stats' })
+    expect(note).toHaveAttribute('title', 'Inferred from species stats')
   })
 
   it('shows a dash for an empty value', () => {
-    const checks = [{ label: 'Nickname', expected: '', found: 'Chompy', ok: true }]
+    const checks = [{ label: 'Nickname', expected: 'Chompy', found: '', ok: true }]
     render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks }]} />)
-    expect(screen.getByRole('row', { name: 'Nickname - Chompy' })).toBeInTheDocument()
-  })
-
-  it('uses the singular for one error', () => {
-    const checks = [{ label: 'Item', expected: 'Choice Scarf', found: 'Life Orb', ok: false }]
-    render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks }]} />)
-    expect(screen.getByRole('status')).toHaveTextContent(/^1 error$/)
-    expect(screen.getByText(/Garchomp/)).toHaveTextContent('Garchomp (1 error)')
-  })
-
-  it('says when everything matches', () => {
-    render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks: [] }]} />)
-    expect(screen.getByRole('status')).toHaveTextContent('Your team is valid. This tool can make mistakes. Be sure to double check!')
+    expect(screen.getByRole('row', { name: 'Nickname -' })).toBeInTheDocument()
   })
 })
