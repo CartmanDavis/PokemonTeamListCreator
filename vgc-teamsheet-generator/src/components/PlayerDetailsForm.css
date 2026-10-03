@@ -33,8 +33,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  /* Room for the last row's help links. */
-  margin-top: 16px;
 }
 
 .player-details-footer .option-group {

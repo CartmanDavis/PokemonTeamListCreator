@@ -1,4 +1,4 @@
-import { useId, useState } from 'react'
+import { useId, useState, type ReactNode } from 'react'
 import type { PlayerInfo } from '../lib/types'
 import { AgeDivisionSelector } from './AgeDivisionSelector'
 import { TextField } from './TextField'
@@ -8,7 +8,7 @@ const FIELDS: {
   key: Exclude<keyof PlayerInfo, 'ageDivision'>
   label: string
   maxLength?: number
-  help?: { href: string; text: string }
+  help?: ReactNode
 }[] = [
   { key: 'playerName', label: 'Player Name', maxLength: 45 },
   { key: 'trainerName', label: 'Trainer Name in Game' },
@@ -16,16 +16,47 @@ const FIELDS: {
   {
     key: 'playerId',
     label: 'Player ID',
-    help: {
-      href: 'https://support.pokemon.com/hc/en-us/articles/360001031234-How-do-I-generate-a-Player-ID',
-      text: 'What is my Player ID?',
-    },
+    help: (
+      <>
+        <p>Your Play! Pokémon Player ID is shown under your name in your Pokémon Trainer Central account.</p>
+        <p>Don't have one yet?</p>
+        <ol>
+          <li>
+            Log in to Pokémon Trainer Central and choose <strong>Play! Pokémon</strong> from the menu.
+          </li>
+          <li>
+            Select <strong>Create a Play! Pokémon Account</strong> and fill in the required details.
+          </li>
+          <li>
+            At <strong>Enter Your Player ID</strong>, choose <strong>I do not have a Player ID</strong>, then{' '}
+            <strong>Continue</strong>.
+          </li>
+        </ol>
+        <p>
+          If you were given a Player ID at an event, choose <strong>I have a Player ID</strong> instead and enter it
+          with its PIN.
+        </p>
+      </>
+    ),
   },
   { key: 'birth', label: 'Date of Birth' },
   {
     key: 'supportId',
     label: 'Support ID',
-    help: { href: 'https://x.com/RoiRehh/status/2100668064249393459', text: 'What is my Support ID?' },
+    help: (
+      <>
+        <p>Your Pokémon Champions Support ID can be found in two places:</p>
+        <ul>
+          <li>
+            On the title screen, in the bottom-right corner before you select <strong>Start</strong>.
+          </li>
+          <li>
+            In the main menu, under <strong>Submenu → Legal Info &amp; More</strong>.
+          </li>
+        </ul>
+        <p>It only appears on the Staff team list.</p>
+      </>
+    ),
   },
 ]
 

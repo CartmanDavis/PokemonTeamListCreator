@@ -42,8 +42,13 @@
   border-image: var(--gradient) 1;
 }
 
-.text-field a {
+.text-field.has-help input {
+  padding-right: 32px;
+}
+
+.text-field > .info-tip {
   position: absolute;
-  right: 0;
-  margin-top: 5px;
+  top: 4px;
+  right: 2px;
+  z-index: 2;
 }
