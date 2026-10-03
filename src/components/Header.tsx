@@ -1,9 +1,9 @@
 import './Header.css'
 
-export function Header() {
+export function Header({ title = 'VGC Teamsheet Generator' }: { title?: string }) {
   return (
     <header className="site-header">
-      <h1>VGC Teamsheet Generator</h1>
+      <h1>{title}</h1>
     </header>
   )
 }

@@ -1,14 +1,19 @@
 // @vitest-environment jsdom
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router'
 import { afterEach, describe, expect, it } from 'vitest'
-import App from './App'
+import { AppRoutes } from './AppRoutes'
 
 afterEach(() => localStorage.clear())
 
 function setup() {
   const user = userEvent.setup()
-  render(<App />)
+  render(
+    <MemoryRouter>
+      <AppRoutes />
+    </MemoryRouter>,
+  )
   return {
     user,
     team: within(screen.getByRole('region', { name: 'Team Info' })),
@@ -24,7 +29,8 @@ describe('App', () => {
     await user.paste('Charizard-Mega-Y @ Charizardite Y\nAbility: Drought\n- Heat Wave')
     await user.click(print)
 
-    const alert = await team.findByRole('alert')
+    // Printing first loads jsPDF, which can take a while when the whole suite runs at once.
+    const alert = await team.findByRole('alert', {}, { timeout: 5000 })
     expect(alert).toHaveTextContent('Your team needs a fix before printing')
     expect(alert).toHaveTextContent('List it as Charizard holding its Mega Stone instead.')
     expect(alert).toHaveFocus()

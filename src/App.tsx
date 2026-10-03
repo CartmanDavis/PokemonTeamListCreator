@@ -10,9 +10,14 @@ import { useTeamsheetPrinter } from './hooks/useTeamsheetPrinter'
 import type { Lang, SheetKind } from './lib/types'
 import './App.css'
 
-function App() {
+interface AppProps {
+  /** Shared with the team check page, so the paste carries over between them. */
+  paste: string
+  onPasteChange: (value: string) => void
+}
+
+function App({ paste, onPasteChange }: AppProps) {
   const [teamName, setTeamName] = useState('')
-  const [paste, setPaste] = useState('')
   const { player, setPlayer, remember, setRemember } = usePlayerInfo()
   const [sheets, setSheets] = useState<SheetKind[]>(['open', 'close'])
   const [lang, setLang] = useState<Lang>('En')
@@ -28,7 +33,7 @@ function App() {
           onTeamNameChange={setTeamName}
           paste={paste}
           onPasteChange={(value) => {
-            setPaste(value)
+            onPasteChange(value)
             clearProblem('team')
           }}
           issues={problem?.area === 'team' ? problem : undefined}
