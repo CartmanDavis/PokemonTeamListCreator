@@ -8,7 +8,7 @@ import pretendardUrl from '../assets/fonts/Pretendard-Regular.ttf'
 import notoSansUrl from '../assets/fonts/NotoSans-Regular.ttf'
 import { TeamsheetError } from './errors'
 import { loadFont } from './fonts'
-import { loadTranslations, translate, type Translations } from './i18n'
+import { loadTranslations, translate, type Category, type Translations } from './i18n'
 import { Koffing, type Pokemon } from './koffing'
 import {
   STAT_IDS,
@@ -61,21 +61,31 @@ interface TeamsheetEntry {
   stats?: Stats
 }
 
+/** The team list has one box per Pokémon. */
+const MAX_TEAM_SIZE = 6
+
 export async function generateTeamsheet(options: TeamsheetOptions): Promise<void> {
   const pokemon = Koffing.parse(options.paste).teams[0]?.pokemon ?? []
   if (pokemon.length === 0) {
-    throw new TeamsheetError('ERROR IN PASTE')
+    throw new TeamsheetError(["We couldn't find any Pokémon in your paste. Paste a team exported from Pokémon Showdown."])
   }
 
-  const [translations, teamFont, ...labelFonts] = await Promise.all([
-    loadTranslations(options.lang),
-    loadFont(teamFontUrl(options.lang)),
-    ...Object.values(LABEL_FONT_URLS).map(loadFont),
-  ])
+  // Start the (large) font downloads right away, but validate the team before waiting on them.
+  const fonts = Promise.all([loadFont(teamFontUrl(options.lang)), ...Object.values(LABEL_FONT_URLS).map(loadFont)])
+  fonts.catch(() => {}) // Awaited below; avoids an unhandled rejection if validation fails first.
+  const translations = await loadTranslations(options.lang)
 
   const sheets = SHEET_ORDER.filter((sheet) => options.sheets.includes(sheet))
-  const entries = pokemon.map((poke) => resolveEntry(poke, translations, sheets.includes('close')))
+  const issues: string[] = []
+  if (pokemon.length > MAX_TEAM_SIZE) {
+    issues.push(`Your paste has ${pokemon.length} Pokémon, but a team list holds ${MAX_TEAM_SIZE}. Remove the extras.`)
+  }
+  const entries = pokemon.map((poke) => resolveEntry(poke, translations, sheets.includes('close'), issues))
+  if (issues.length > 0) {
+    throw new TeamsheetError(issues)
+  }
 
+  const [teamFont, ...labelFonts] = await fonts
   const doc = new jsPDF()
   registerFont(doc, TEAM_FONT, teamFont)
   Object.keys(LABEL_FONT_URLS).forEach((name, i) => registerFont(doc, name, labelFonts[i]))
@@ -103,52 +113,54 @@ function capitalizeInput(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
 
+/** Resolves a Pokémon's printed details, adding any problems found to `issues`. */
 function resolveEntry(
   poke: Pokemon,
   translations: Translations,
   needsStats: boolean,
+  issues: string[],
 ): TeamsheetEntry {
+  const entry: TeamsheetEntry = { name: '', nature: '', ability: '', item: 'NO ITEM', moves: [] }
+
   const base = getBaseStats(poke.name)
   if (!base) {
-    throw new TeamsheetError('ERROR IN PASTE')
+    issues.push(`"${poke.name}" isn't a Pokémon we recognize. Check the spelling of its first line.`)
+    return entry
   }
-  if (/.{1,}-Mega(-[XYZ]){0,1}/.test(poke.name)) {
-    throw new TeamsheetError(
-      `ERROR IN PASTE:\n${poke.name} is a mega evolution!\nChange it to the base form, with a valid ability, holding a mega evolution stone.`,
-    )
+  const mega = /^(.+?)-Mega(-[XYZ])?$/.exec(poke.name)
+  if (mega) {
+    issues.push(`${poke.name} is a Mega Evolution. List it as ${mega[1]} holding its Mega Stone instead.`)
+    return entry
   }
 
-  const required = (category: Parameters<typeof translate>[1], englishName: string, label: string) => {
+  const lookup = (category: Category, englishName: string, kind: string) => {
     const translated = translate(translations, category, englishName)
     if (translated === undefined) {
-      throw new TeamsheetError(`ERROR IN PASTE:\nUnknown ${label} "${englishName}" on ${poke.name}.`)
+      issues.push(`${poke.name}: "${englishName}" isn't ${kind} we recognize. Check the spelling.`)
     }
-    return translated
-  }
-
-  if (!poke.ability) {
-    throw new TeamsheetError(`ERROR IN PASTE:\n${poke.name} has no ability.`)
+    return translated ?? ''
   }
 
   const nature = poke.nature ? capitalizeInput(poke.nature) : 'Serious'
+  entry.name = lookup('pokes', poke.name, 'a Pokémon')
+  entry.nature = translate(translations, 'natures', nature) ?? nature
+  if (poke.ability) {
+    entry.ability = lookup('abilities', poke.ability, 'an ability')
+  } else {
+    issues.push(`${poke.name} has no ability. Add an "Ability:" line to its set.`)
+  }
+  if (poke.item) entry.item = lookup('items', poke.item, 'an item')
+  entry.moves = poke.moves.map((move) => lookup('moves', move, 'a move'))
 
-  let stats: Stats | undefined
-  if (needsStats) {
-    const modifiers = getNatureModifiers(nature)
-    if (!modifiers) {
-      throw new TeamsheetError(`ERROR IN PASTE:\nUnknown nature "${nature}" on ${poke.name}.`)
-    }
-    stats = getChampionsStats(base, fillSpread(poke.evs), modifiers)
+  // Nature is printed on every sheet in Champions, so check it even without stats.
+  const modifiers = getNatureModifiers(nature)
+  if (!modifiers) {
+    issues.push(`${poke.name}: "${nature}" isn't a valid nature.`)
+  } else if (needsStats) {
+    entry.stats = getChampionsStats(base, fillSpread(poke.evs), modifiers)
   }
 
-  return {
-    name: required('pokes', poke.name, 'Pokémon'),
-    nature: translate(translations, 'natures', nature) ?? nature,
-    ability: required('abilities', poke.ability, 'ability'),
-    item: poke.item ? required('items', poke.item, 'item') : 'NO ITEM',
-    moves: poke.moves.map((move) => required('moves', move, 'move')),
-    stats,
-  }
+  return entry
 }
 
 function drawSheet(doc: jsPDF, sheet: SheetKind, entries: TeamsheetEntry[], options: TeamsheetOptions) {

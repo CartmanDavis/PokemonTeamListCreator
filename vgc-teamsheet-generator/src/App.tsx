@@ -16,19 +16,36 @@ function App() {
   const { player, setPlayer, remember, setRemember } = usePlayerInfo()
   const [sheets, setSheets] = useState<SheetKind[]>(['open', 'close'])
   const [lang, setLang] = useState<Lang>('En')
-  const { print, error, generating } = useTeamsheetPrinter()
+  const { print, generating, problem, clearProblem } = useTeamsheetPrinter()
 
   return (
     <div className="page">
       <Header />
       <main className="app">
         <PlayerDetailsForm value={player} onChange={setPlayer} remember={remember} onRememberChange={setRemember} />
-        <TeamPanel teamName={teamName} onTeamNameChange={setTeamName} paste={paste} onPasteChange={setPaste} />
-        <PrintSettings sheets={sheets} onSheetsChange={setSheets} lang={lang} onLangChange={setLang} />
+        <TeamPanel
+          teamName={teamName}
+          onTeamNameChange={setTeamName}
+          paste={paste}
+          onPasteChange={(value) => {
+            setPaste(value)
+            clearProblem('team')
+          }}
+          issues={problem?.area === 'team' ? problem : undefined}
+        />
+        <PrintSettings
+          sheets={sheets}
+          onSheetsChange={(value) => {
+            setSheets(value)
+            clearProblem('print')
+          }}
+          lang={lang}
+          onLangChange={setLang}
+        />
         <PrintActions
           onPrint={() => print({ player, teamName, paste, sheets, lang })}
           generating={generating}
-          error={error}
+          problem={problem?.area === 'print' ? problem : undefined}
         />
       </main>
       <Footer />

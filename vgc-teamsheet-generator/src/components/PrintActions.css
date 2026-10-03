@@ -29,12 +29,6 @@
   opacity: 0.6;
 }
 
-.print-actions .error {
-  min-height: 1.5em;
-  margin: 0;
-  color: var(--error);
-  font-size: 13px;
-  font-weight: bold;
-  text-align: center;
-  white-space: pre-line;
+.print-actions .alert {
+  align-self: stretch;
 }

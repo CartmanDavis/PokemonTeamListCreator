@@ -1,15 +1,27 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { TeamsheetError } from '../lib/errors'
 import type { TeamsheetOptions } from '../lib/types'
 
+export interface PrintProblem {
+  /** Which part of the form the problem belongs to, so it can be shown there. */
+  area: 'team' | 'print'
+  messages: string[]
+  /** Changes on every failed attempt, so a repeated problem is announced again. */
+  id: number
+}
+
 export function useTeamsheetPrinter() {
-  const [error, setError] = useState('')
+  const [problem, setProblem] = useState<PrintProblem | null>(null)
   const [generating, setGenerating] = useState(false)
+  const attempts = useRef(0)
+
+  const fail = (area: PrintProblem['area'], messages: string[]) =>
+    setProblem({ area, messages, id: ++attempts.current })
 
   async function print(form: TeamsheetOptions) {
-    setError('')
-    if (form.sheets.length === 0) return setError('NO TEAM LIST SELECTED')
-    if (!form.paste) return setError('NO PASTE DETECTED')
+    setProblem(null)
+    if (!form.paste.trim()) return fail('team', ['Paste your team from Pokémon Showdown to print a team list.'])
+    if (form.sheets.length === 0) return fail('print', ['Select at least one team list to print.'])
 
     setGenerating(true)
     try {
@@ -17,12 +29,20 @@ export function useTeamsheetPrinter() {
       const { generateTeamsheet } = await import('../lib/teamsheet')
       await generateTeamsheet(form)
     } catch (err) {
-      if (!(err instanceof TeamsheetError)) console.error(err)
-      setError(err instanceof TeamsheetError ? err.message : 'SOMETHING WENT WRONG GENERATING THE PDF')
+      if (err instanceof TeamsheetError) {
+        fail('team', err.issues)
+      } else {
+        console.error(err)
+        fail('print', ['Something went wrong generating the PDF. Please try again.'])
+      }
     } finally {
       setGenerating(false)
     }
   }
 
-  return { print, error, generating }
+  /** Dismisses the problem shown in `area`, e.g. once the user starts fixing it. */
+  const clearProblem = (area: PrintProblem['area']) =>
+    setProblem((current) => (current?.area === area ? null : current))
+
+  return { print, generating, problem, clearProblem }
 }
