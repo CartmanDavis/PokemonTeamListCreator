@@ -23,7 +23,6 @@ function App() {
 
   return (
     <>
-      <p className="banner">CURRENTLY WORKING ON UPDATE FOR POKÉMON CHAMPIONS</p>
       <div className="layout">
         <PastePanel value={paste} onChange={setPaste} />
 
