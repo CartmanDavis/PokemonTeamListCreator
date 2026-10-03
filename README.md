@@ -12,8 +12,6 @@ pnpm lint     # run oxlint
 pnpm test     # run unit tests
 ```
 
-Pushes to `main` deploy to GitHub Pages.
-
 ## Credits
 
 Based on [DhSufi's Pokémon Team List Creator](https://github.com/DhSufi/PokemonTeamListCreator), with contributions to the original from Aurélien Soula (Axior) and [Joe Zhu](https://twitter.com/joezhuu).
