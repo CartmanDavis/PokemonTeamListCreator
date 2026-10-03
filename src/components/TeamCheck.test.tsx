@@ -14,7 +14,7 @@ describe('TeamCheckResults', () => {
             name: 'Charizard',
             checks: [
               { label: 'Ability', expected: 'Solar Power', found: 'Blaze', ok: false },
-              { label: 'Spe', expected: '139 (19 pts)', found: '140 (20 pts)', ok: false },
+              { label: 'Spe', expected: '19', expectedDetail: '139', found: '20', foundDetail: '140', ok: false },
             ],
           },
         ]}
@@ -25,6 +25,7 @@ describe('TeamCheckResults', () => {
     expect(screen.getByText(/Charizard/).closest('details')).toHaveAttribute('open')
     expect(screen.getByText(/Charizard/)).toHaveTextContent('Charizard (2 errors)')
     expect(screen.getByRole('row', { name: 'Ability Solar Power Blaze' })).toHaveClass('mismatch')
+    expect(screen.getByRole('row', { name: 'Spe 19 (139) 20 (140)' })).toBeInTheDocument()
   })
 
   it('shows notes', () => {

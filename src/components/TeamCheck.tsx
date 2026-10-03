@@ -91,9 +91,11 @@ export function TeamCheckResults({ reports }: { reports: PokemonReport[] }) {
                 {report.checks.map((c, i) => (
                   <tr key={i} className={c.ok ? undefined : 'mismatch'}>
                     <th scope="row">{c.label}</th>
-                    <td>{c.expected || <Blank />}</td>
                     <td>
-                      {c.found || <Blank />}
+                      <Value text={c.expected} detail={c.expectedDetail} />
+                    </td>
+                    <td>
+                      <Value text={c.found} detail={c.foundDetail} />
                       {c.note && (
                         <span className="team-check-note" role="img" aria-label={c.note} title={c.note}>
                           !
@@ -111,6 +113,13 @@ export function TeamCheckResults({ reports }: { reports: PokemonReport[] }) {
   )
 }
 
-function Blank() {
-  return <span className="team-check-blank">-</span>
+/** A value with a detail is a pair of numbers, like stat points and the stat, kept right-aligned. */
+function Value({ text, detail }: { text: string; detail?: string }) {
+  if (!detail) return text || <span className="team-check-blank">-</span>
+  return (
+    <>
+      <span className="team-check-number">{text}</span>{' '}
+      <span className="team-check-number team-check-detail">({detail})</span>
+    </>
+  )
 }

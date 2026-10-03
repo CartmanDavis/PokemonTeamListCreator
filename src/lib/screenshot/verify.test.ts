@@ -90,9 +90,9 @@ describe('verifyTeam', () => {
       { name: 'Charizard', label: 'Ability', expected: 'Solar Power', found: 'Blaze', ok: false },
       { name: 'Incineroar', label: 'Move', expected: 'Knock Off', found: 'Throat Chop', ok: false },
       { name: 'Sinistcha', label: 'Nature', expected: 'Sassy (+SpD −Spe)', found: 'Relaxed (+Def −Spe)', ok: false },
-      { name: 'Sinistcha', label: 'Def', expected: '133 (7 pts)', found: '146 (7 pts)', ok: false },
-      { name: 'Sinistcha', label: 'SpD', expected: '139 (27 pts)', found: '127 (27 pts)', ok: false },
-      { name: 'Venusaur', label: 'SpA', expected: '150 (30 pts)', found: '152 (32 pts)', ok: false },
+      { name: 'Sinistcha', label: 'Def', expected: '7', found: '7', expectedDetail: '133', foundDetail: '146', ok: false },
+      { name: 'Sinistcha', label: 'SpD', expected: '27', found: '27', expectedDetail: '139', foundDetail: '127', ok: false },
+      { name: 'Venusaur', label: 'SpA', expected: '30', found: '32', expectedDetail: '150', foundDetail: '152', ok: false },
     ])
   })
 

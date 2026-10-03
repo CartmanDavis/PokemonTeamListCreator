@@ -81,6 +81,18 @@
   color: var(--error);
 }
 
+.team-check-number {
+  display: inline-block;
+  min-width: 2ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.team-check-pokemon tr td .team-check-detail {
+  min-width: 5ch;
+  color: var(--label);
+}
+
 .team-check-blank {
   color: var(--label);
   opacity: 0.6;

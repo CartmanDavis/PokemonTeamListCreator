@@ -11,6 +11,10 @@ export interface Check {
   expected: string
   /** What the screenshot shows. */
   found: string
+  /** Secondary information shown after `expected`, e.g. the stat a stat point investment comes to. */
+  expectedDetail?: string
+  /** Secondary information shown after `found`. */
+  foundDetail?: string
   ok: boolean
   /** Something to flag about the row that isn't an error, e.g. "Inferred from species stats". */
   note?: string
@@ -194,12 +198,14 @@ function statsScreenChecks(poke: Pokemon, shown: StatsScreenPokemon): Check[] {
   const base = getBaseStats(poke.name)
   const points = fillSpread(poke.evs)
   const expected = base && modifiers ? getChampionsStats(base, points, modifiers) : undefined
-  const describe = (stat?: number, pts?: number) => `${stat ?? '?'} (${pts ?? '?'} pts)`
+  const describe = (n?: number) => `${n ?? '?'}`
   for (const stat of STAT_IDS) {
     checks.push({
       label: STAT_NAMES[stat],
-      expected: describe(expected?.[stat], points[stat]),
-      found: describe(shown.stats[stat], shown.points[stat]),
+      expected: describe(points[stat]),
+      expectedDetail: describe(expected?.[stat]),
+      found: describe(shown.points[stat]),
+      foundDetail: describe(shown.stats[stat]),
       ok: expected?.[stat] === shown.stats[stat] && points[stat] === shown.points[stat],
     })
   }
