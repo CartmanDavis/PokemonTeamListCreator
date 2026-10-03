@@ -29,7 +29,6 @@ export function Alert({ id, title, children }: AlertProps) {
   )
 }
 
-/** Renders one message as a paragraph, or several as a list. */
 export function AlertMessages({ messages }: { messages: string[] }) {
   if (messages.length === 1) return <p>{messages[0]}</p>
   return (

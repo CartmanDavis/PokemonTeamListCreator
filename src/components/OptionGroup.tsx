@@ -36,7 +36,6 @@ export function OptionGroup<T extends string>({
         return (
           <label key={option.value} className={selected ? 'selected' : undefined}>
             <input
-              // Radios render as a segmented control; checkboxes keep the native box.
               className={type === 'radio' ? 'visually-hidden' : undefined}
               type={type}
               name={name}

@@ -7,7 +7,6 @@ interface TextFieldProps {
   value: string
   onChange: (value: string) => void
   maxLength?: number
-  /** Extra guidance shown in an info bubble next to the field. */
   help?: ReactNode
 }
 

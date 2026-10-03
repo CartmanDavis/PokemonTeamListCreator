@@ -1,6 +1,6 @@
 .site-header h1 {
   width: fit-content;
-  /* Centered; fit-content keeps the gradient spanning just the text. */
+  /* fit-content keeps the gradient to the width of the text. */
   margin: 0 auto;
   text-align: center;
   background: var(--gradient);

@@ -34,7 +34,6 @@ a {
   color: #8ab4ff;
 }
 
-/* A titled section of the page. */
 .card {
   display: flex;
   flex-direction: column;

@@ -28,10 +28,8 @@ export function fillSpread(spread: StatSpread | undefined): Stats {
 }
 
 /**
- * Stat calculation in Champions with the new EVs system.
- * Pokémon are locked at level 50 with max IVs, so the formula is way simpler:
- * HP gets +75 from base while other stats get +20, then we add the EVs,
- * then apply nature (except for HP).
+ * Champions stat formula. Pokémon are fixed at level 50 with max IVs, so each stat is
+ * base + 75 (HP) or base + 20 (others), plus EVs, then the nature modifier (except HP).
  */
 export function getChampionsStats(base: Stats, evs: Stats, nature: Stats): Stats {
   const stats = {} as Stats

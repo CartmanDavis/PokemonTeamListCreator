@@ -29,7 +29,6 @@ export const DEFAULT_PLAYER: PlayerInfo = {
 
 export interface TeamsheetOptions {
   player: PlayerInfo
-  /** Battle Team number or name, as shown in the game. */
   teamName: string
   paste: string
   sheets: SheetKind[]

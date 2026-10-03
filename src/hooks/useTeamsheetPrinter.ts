@@ -40,7 +40,6 @@ export function useTeamsheetPrinter() {
     }
   }
 
-  /** Dismisses the problem shown in `area`, e.g. once the user starts fixing it. */
   const clearProblem = (area: PrintProblem['area']) =>
     setProblem((current) => (current?.area === area ? null : current))
 

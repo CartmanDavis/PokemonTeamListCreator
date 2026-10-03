@@ -5,8 +5,7 @@ const SHEET_LABELS: Record<SheetKind, string> = {
   close: 'Staff Team List',
 }
 
-/** Characters that aren't allowed in file names on some systems. */
-// Control characters are matched on purpose: they're invalid in file names.
+// Characters that aren't allowed in file names on some systems, including control characters.
 // oxlint-disable-next-line no-control-regex
 const UNSAFE_CHARACTERS = /[\\/:*?"<>|\u0000-\u001f]/g
 

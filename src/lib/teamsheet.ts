@@ -62,7 +62,6 @@ interface TeamsheetEntry {
   stats?: Stats
 }
 
-/** The team list has one box per Pokémon. */
 const MAX_TEAM_SIZE = 6
 
 export async function generateTeamsheet(options: TeamsheetOptions): Promise<void> {
