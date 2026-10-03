@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Footer } from './components/Footer'
+import { Header } from './components/Header'
 import { PlayerDetailsForm } from './components/PlayerDetailsForm'
 import { PrintActions } from './components/PrintActions'
 import { PrintSettings } from './components/PrintSettings'
@@ -17,17 +19,20 @@ function App() {
   const { print, error, generating } = useTeamsheetPrinter()
 
   return (
-    <main className="app">
-      <h1 className="visually-hidden">VGC Teamsheet Generator</h1>
-      <PlayerDetailsForm value={player} onChange={setPlayer} remember={remember} onRememberChange={setRemember} />
-      <TeamPanel teamName={teamName} onTeamNameChange={setTeamName} paste={paste} onPasteChange={setPaste} />
-      <PrintSettings sheets={sheets} onSheetsChange={setSheets} lang={lang} onLangChange={setLang} />
-      <PrintActions
-        onPrint={() => print({ player, teamName, paste, sheets, lang })}
-        generating={generating}
-        error={error}
-      />
-    </main>
+    <div className="page">
+      <Header />
+      <main className="app">
+        <PlayerDetailsForm value={player} onChange={setPlayer} remember={remember} onRememberChange={setRemember} />
+        <TeamPanel teamName={teamName} onTeamNameChange={setTeamName} paste={paste} onPasteChange={setPaste} />
+        <PrintSettings sheets={sheets} onSheetsChange={setSheets} lang={lang} onLangChange={setLang} />
+        <PrintActions
+          onPrint={() => print({ player, teamName, paste, sheets, lang })}
+          generating={generating}
+          error={error}
+        />
+      </main>
+      <Footer />
+    </div>
   )
 }
 
