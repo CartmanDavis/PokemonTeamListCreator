@@ -80,3 +80,23 @@
 .team-check-pokemon tr.mismatch td {
   color: var(--error);
 }
+
+.team-check-blank {
+  color: var(--label);
+  opacity: 0.6;
+}
+
+.team-check-note {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: #f5c451;
+  color: #1a1a1a;
+  font-size: 11px;
+  font-weight: bold;
+  vertical-align: text-bottom;
+  cursor: help;
+}

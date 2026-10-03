@@ -13,22 +13,69 @@ describe('verifyTeam', () => {
   it('passes a team that matches both screens', () => {
     const reports = verifyTeam(team(paste), { moves: movesScreen, stats: statsScreen })
     expect(failures(reports)).toEqual([])
-    expect(reports.map((r) => r.checks.length)).toEqual([14, 14, 14, 14, 14, 14])
+    expect(reports.map((r) => r.checks.length)).toEqual([15, 15, 15, 15, 15, 15])
   })
 
-  it('accepts a nickname missing from the paste when the stats fit the species', () => {
+  it('infers the species of a nicknamed Pokémon from its stats', () => {
+    const reports = verifyTeam(team(paste), { moves: movesScreen, stats: statsScreen })
+    expect(reports[0].checks.slice(0, 2)).toEqual([
+      { label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: 'Inferred from the stats' },
+      { label: 'Nickname', expected: 'Chompy', found: 'Chompy', ok: true },
+    ])
+  })
+
+  it('infers the species from the nickname without the stats screen', () => {
+    const reports = verifyTeam(team(paste), { moves: movesScreen })
+    expect(reports[0].checks[0]).toEqual({
+      label: 'Pokémon',
+      expected: 'Garchomp',
+      found: 'Garchomp',
+      ok: true,
+      note: 'Inferred from the nickname',
+    })
+  })
+
+  it('reads the species when the game shows it', () => {
+    const reports = verifyTeam(team(paste), { moves: movesScreen, stats: statsScreen })
+    expect(reports[2].checks.slice(0, 2)).toEqual([
+      { label: 'Pokémon', expected: 'Incineroar', found: 'Incineroar', ok: true },
+      { label: 'Nickname', expected: '', found: '', ok: true },
+    ])
+  })
+
+  it('accepts a nickname missing from the paste', () => {
     const reports = verifyTeam(team(paste.replace('Chompy (Garchomp)', 'Garchomp')), { moves: movesScreen, stats: statsScreen })
-    expect(reports[0].checks[0]).toEqual({ label: 'Pokémon', expected: 'Garchomp', found: 'Chompy (stats fit Garchomp)', ok: true })
+    expect(reports[0].checks.slice(0, 2)).toEqual([
+      { label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: 'Inferred from the stats' },
+      { label: 'Nickname', expected: '', found: 'Chompy', ok: true },
+    ])
   })
 
-  it('needs the stats screen to accept an unknown nickname', () => {
+  it('warns about a different nickname without failing', () => {
+    const reports = verifyTeam(team(paste.replace('Chompy (Garchomp)', 'Sharky (Garchomp)')), { moves: movesScreen, stats: statsScreen })
+    expect(reports[0].checks[1]).toEqual({
+      label: 'Nickname',
+      expected: 'Sharky',
+      found: 'Chompy',
+      ok: true,
+      note: 'Nickname does not match paste',
+    })
+    expect(failures(reports)).toEqual([])
+  })
+
+  it('accepts a nickname missing from the game', () => {
+    const reports = verifyTeam(team(paste.replace('Incineroar (M)', 'Kitty (Incineroar) (M)')), { moves: movesScreen })
+    expect(reports[2].checks[1]).toEqual({ label: 'Nickname', expected: 'Kitty', found: '', ok: true })
+  })
+
+  it('needs the stats screen to confirm the species behind an unknown nickname', () => {
     const reports = verifyTeam(team(paste.replace('Chompy (Garchomp)', 'Garchomp')), { moves: movesScreen })
     expect(reports[0].checks[0].ok).toBe(false)
   })
 
   it('reports a different species', () => {
     const reports = verifyTeam(team(paste.replace('Chompy (Garchomp)', 'Salamence')), { stats: statsScreen })
-    expect(reports[0].checks[0]).toMatchObject({ found: 'Chompy (stats fit Garchomp)', ok: false })
+    expect(reports[0].checks[0]).toMatchObject({ found: 'Garchomp', ok: false })
   })
 
   it('reports wrong items, abilities, moves, natures and stat points', () => {

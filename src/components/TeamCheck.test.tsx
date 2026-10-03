@@ -27,6 +27,18 @@ describe('TeamCheckResults', () => {
     expect(screen.getByRole('row', { name: 'Ability Solar Power Blaze' })).toHaveClass('mismatch')
   })
 
+  it('shows notes', () => {
+    const checks = [{ label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: 'Inferred from the stats' }]
+    render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks }]} />)
+    expect(screen.getByRole('img', { name: 'Inferred from the stats' })).toHaveAttribute('title', 'Inferred from the stats')
+  })
+
+  it('shows a dash for an empty value', () => {
+    const checks = [{ label: 'Nickname', expected: '', found: 'Chompy', ok: true }]
+    render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks }]} />)
+    expect(screen.getByRole('row', { name: 'Nickname - Chompy' })).toBeInTheDocument()
+  })
+
   it('uses the singular for one error', () => {
     const checks = [{ label: 'Item', expected: 'Choice Scarf', found: 'Life Orb', ok: false }]
     render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks }]} />)

@@ -7,11 +7,13 @@ import type { MovesScreenPokemon, NatureArrows, StatsScreenPokemon } from './rea
 
 export interface Check {
   label: string
-  /** What the teamsheet says. */
+  /** What the teamsheet says; empty when there's nothing, like no nickname. */
   expected: string
   /** What the screenshot shows. */
   found: string
   ok: boolean
+  /** Something to flag about the row that isn't an error, e.g. "Inferred from the stats". */
+  note?: string
 }
 
 export interface PokemonReport {
@@ -52,7 +54,7 @@ export function verifyTeam(team: Pokemon[], screens: TeamScreens): PokemonReport
     }
     const moves = screens.moves?.[slot]
     const stats = screens.stats?.[slot]
-    const checks = [pokemonCheck(poke, shownAs(slot), stats && species[slot])]
+    const checks = nameChecks(poke, shownAs(slot), stats && species[slot])
     if (moves) checks.push(...movesScreenChecks(poke, moves))
     if (stats) checks.push(...statsScreenChecks(poke, stats))
     return { name: poke.name, gameSlot: slot, checks }
@@ -121,23 +123,34 @@ function pairUp(count: number, slots: number, score: (i: number, slot: number) =
 }
 
 /**
- * The game shows a nickname instead of the species when there is one, and leaves off forms.
- * A nickname the paste doesn't have is fine as long as the stats fit the species; the stats
- * check catches the wrong form.
+ * The game shows a nickname instead of the species when there is one, and leaves off forms, so
+ * the species of a nicknamed Pokémon is inferred from its stats, or failing that its nickname.
+ * The stats check catches the wrong form.
  */
-function pokemonCheck(poke: Pokemon, shownAs: string, species: string[] | undefined): Check {
-  const expected = poke.nickname ? `${poke.name} (${poke.nickname})` : poke.name
-  if (namesFor(poke).some((name) => looksLike(shownAs, name))) {
-    return { label: 'Pokémon', expected, found: shownAs, ok: true }
+function nameChecks(poke: Pokemon, shownAs: string, species: string[] | undefined): Check[] {
+  const showsSpecies = [poke.name, poke.name.split('-')[0]].some((name) => looksLike(shownAs, name))
+  const showsNickname = !!poke.nickname && looksLike(shownAs, poke.nickname)
+  const nicknameShown = showsNickname || !showsSpecies ? shownAs : ''
+  // Nicknames don't affect the team, so a different one is only worth a warning.
+  const nickname: Check = { label: 'Nickname', expected: poke.nickname ?? '', found: nicknameShown, ok: true }
+  if (poke.nickname && nicknameShown && !showsNickname) nickname.note = 'Nickname does not match paste'
+
+  let pokemon: Check
+  if (showsSpecies && !showsNickname) {
+    pokemon = { label: 'Pokémon', expected: poke.name, found: shownAs, ok: true }
+  } else if (species) {
+    const found = species.includes(poke.name)
+      ? poke.name
+      : species.length > 0
+        ? species.join(' or ')
+        : "Unknown (stats don't fit any Pokémon)"
+    pokemon = { label: 'Pokémon', expected: poke.name, found, ok: species.includes(poke.name), note: 'Inferred from the stats' }
+  } else if (showsNickname) {
+    pokemon = { label: 'Pokémon', expected: poke.name, found: poke.name, ok: true, note: 'Inferred from the nickname' }
+  } else {
+    pokemon = { label: 'Pokémon', expected: poke.name, found: 'Unknown (add the Stats screenshot to confirm the species)', ok: false }
   }
-  if (!species) {
-    return { label: 'Pokémon', expected, found: `${shownAs} (add the Stats screenshot to confirm the species)`, ok: false }
-  }
-  if (species.includes(poke.name)) {
-    return { label: 'Pokémon', expected, found: `${shownAs} (stats fit ${poke.name})`, ok: true }
-  }
-  const fits = species.length > 0 ? `stats fit ${species.join(' or ')}` : "stats don't fit any Pokémon"
-  return { label: 'Pokémon', expected, found: `${shownAs} (${fits})`, ok: false }
+  return [pokemon, nickname]
 }
 
 function movesScreenChecks(poke: Pokemon, shown: MovesScreenPokemon): Check[] {

@@ -91,8 +91,15 @@ export function TeamCheckResults({ reports }: { reports: PokemonReport[] }) {
                 {report.checks.map((c, i) => (
                   <tr key={i} className={c.ok ? undefined : 'mismatch'}>
                     <th scope="row">{c.label}</th>
-                    <td>{c.expected}</td>
-                    <td>{c.found}</td>
+                    <td>{c.expected || <Blank />}</td>
+                    <td>
+                      {c.found || <Blank />}
+                      {c.note && (
+                        <span className="team-check-note" role="img" aria-label={c.note} title={c.note}>
+                          !
+                        </span>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -102,4 +109,8 @@ export function TeamCheckResults({ reports }: { reports: PokemonReport[] }) {
       })}
     </div>
   )
+}
+
+function Blank() {
+  return <span className="team-check-blank">-</span>
 }
