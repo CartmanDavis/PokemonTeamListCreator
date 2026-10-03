@@ -34,7 +34,8 @@
 
 .team-check-results {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  /* Two per row at most, dropping to one when a card would be narrower than 260px. */
+  grid-template-columns: repeat(auto-fill, minmax(max(260px, calc((100% - 12px) / 2)), 1fr));
   gap: 12px;
 }
 
@@ -68,6 +69,24 @@
   width: 1%;
   color: var(--label);
   white-space: nowrap;
+}
+
+.team-check-pokemon tr.mismatch s,
+.team-check-pokemon tr.mismatch s .team-check-detail {
+  color: var(--error);
+}
+
+/* Inline blocks don't inherit the strike-through, so the stat numbers need their own. */
+.team-check-pokemon tr.mismatch s .team-check-number {
+  text-decoration: line-through;
+}
+
+.team-check-paste {
+  white-space: nowrap;
+}
+
+.team-check-paste-label {
+  color: var(--label);
 }
 
 .team-check-number {

@@ -6,6 +6,10 @@
   margin: 0 auto;
 }
 
+.page-wide {
+  max-width: 960px;
+}
+
 .app {
   display: flex;
   flex-direction: column;

@@ -8,19 +8,30 @@ describe('TeamCheckResults', () => {
     render(
       <TeamCheckResults
         reports={[
-          { gameSlot: 0, name: 'Garchomp', checks: [{ label: 'Item', expected: 'Choice Scarf', found: 'Life Orb', ok: false }] },
+          { gameSlot: 0, name: 'Garchomp', checks: [{ label: 'Item', expected: 'Life Orb', found: 'Life Orb', ok: true }] },
           {
             gameSlot: 1,
             name: 'Charizard',
-            checks: [{ label: 'Spe', expected: '19', expectedDetail: '139', found: '20', foundDetail: '140', ok: false }],
+            checks: [{ label: 'Spe', expected: '20', expectedDetail: '140', found: '20', foundDetail: '140', ok: true }],
           },
         ]}
       />,
     )
     expect(screen.getByRole('heading', { name: 'Garchomp' })).toBeInTheDocument()
-    expect(screen.getByRole('region', { name: 'Garchomp' })).toHaveTextContent('ItemLife Orb')
+    expect(screen.getByRole('row', { name: 'Item Life Orb' })).not.toHaveClass('mismatch')
     expect(screen.getByRole('row', { name: 'Spe 20 (140)' })).toBeInTheDocument()
-    expect(screen.queryByText('Choice Scarf')).not.toBeInTheDocument()
+  })
+
+  it('strikes through a wrong value and shows the paste value after it', () => {
+    const checks = [
+      { label: 'Item', expected: 'Choice Scarf', found: 'Life Orb', ok: false },
+      { label: 'SpA', expected: '30', expectedDetail: '150', found: '32', foundDetail: '152', ok: false },
+    ]
+    render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks }]} />)
+    expect(screen.getByRole('row', { name: 'Item Life Orb paste: Choice Scarf' })).toHaveClass('mismatch')
+    expect(screen.getByText('Life Orb').closest('s')).toBeInTheDocument()
+    expect(screen.getByText('Choice Scarf').closest('s')).toBeNull()
+    expect(screen.getByRole('row', { name: 'SpA 32 (152) paste: 30 (150)' })).toHaveClass('mismatch')
   })
 
   it('shows notes beside their field', () => {

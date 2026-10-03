@@ -16,7 +16,7 @@ function TeamCheckApp({ paste, onPasteChange }: { paste: string; onPasteChange: 
   }, [])
 
   return (
-    <div className="page">
+    <div className="page page-wide">
       <Header title="In-Game Team Check" />
       <main className="app">
         <p className="beta-notice">

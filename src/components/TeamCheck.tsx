@@ -62,7 +62,10 @@ export function TeamCheck({ paste }: TeamCheckProps) {
   )
 }
 
-/** What the game shows for each Pokémon, with any warnings beside the field they're about. */
+/**
+ * What the game shows for each Pokémon. A wrong value is struck through with the paste's value
+ * after it, and warnings sit beside the field they're about.
+ */
 export function TeamCheckResults({ reports }: { reports: PokemonReport[] }) {
   return (
     <div className="team-check-results">
@@ -72,10 +75,22 @@ export function TeamCheckResults({ reports }: { reports: PokemonReport[] }) {
           <table>
             <tbody>
               {report.checks.map((c, i) => (
-                <tr key={i}>
+                <tr key={i} className={c.ok ? undefined : 'mismatch'}>
                   <th scope="row">{c.label}</th>
                   <td>
-                    <Value text={c.found} detail={c.foundDetail} />
+                    {c.ok ? (
+                      <Value text={c.found} detail={c.foundDetail} />
+                    ) : (
+                      <>
+                        <s>
+                          <Value text={c.found} detail={c.foundDetail} />
+                        </s>{' '}
+                        <span className="team-check-paste">
+                          <span className="team-check-paste-label">paste:</span>{' '}
+                          <Value text={c.expected} detail={c.expectedDetail} />
+                        </span>
+                      </>
+                    )}
                     {c.note && (
                       <span className="team-check-note" role="img" aria-label={c.note} title={c.note}>
                         !
