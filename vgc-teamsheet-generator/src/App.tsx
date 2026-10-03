@@ -5,7 +5,6 @@ import { PastePanel } from './components/PastePanel'
 import { PlayerDetailsForm } from './components/PlayerDetailsForm'
 import { PrintActions } from './components/PrintActions'
 import { SheetSelector } from './components/SheetSelector'
-import { Tips } from './components/Tips'
 import { useTeamsheetPrinter } from './hooks/useTeamsheetPrinter'
 import { readUrlDefaults } from './lib/urlParams'
 import type { SheetKind } from './lib/types'
@@ -22,31 +21,27 @@ function App() {
   const { print, error, generating } = useTeamsheetPrinter()
 
   return (
-    <>
-      <div className="layout">
-        <PastePanel value={paste} onChange={setPaste} />
+    <div className="layout">
+      <PastePanel value={paste} onChange={setPaste} />
 
-        <section className="form-area">
-          <div className="player-details">
-            <PlayerDetailsForm value={player} onChange={setPlayer} />
-          </div>
+      <section className="form-area">
+        <div className="player-details">
+          <PlayerDetailsForm value={player} onChange={setPlayer} />
+        </div>
 
-          <div className="choices">
-            <AgeDivisionSelector value={ageDivision} onChange={setAgeDivision} />
-            <SheetSelector value={sheets} onChange={setSheets} />
-            <LanguageSelector value={lang} onChange={setLang} />
-          </div>
+        <div className="choices">
+          <AgeDivisionSelector value={ageDivision} onChange={setAgeDivision} />
+          <SheetSelector value={sheets} onChange={setSheets} />
+          <LanguageSelector value={lang} onChange={setLang} />
+        </div>
 
-          <PrintActions
-            onPrint={() => print({ player, paste, ageDivision, sheets, lang })}
-            generating={generating}
-            error={error}
-          />
-        </section>
-
-        <Tips />
-      </div>
-    </>
+        <PrintActions
+          onPrint={() => print({ player, paste, ageDivision, sheets, lang })}
+          generating={generating}
+          error={error}
+        />
+      </section>
+    </div>
   )
 }
 
