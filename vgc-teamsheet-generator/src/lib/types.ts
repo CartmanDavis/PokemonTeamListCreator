@@ -10,7 +10,6 @@ export type Lang = 'Cht' | 'Chs' | 'En' | 'Es' | 'Fre' | 'Ger' | 'Ita' | 'Jpn' |
 export interface PlayerInfo {
   playerName: string
   trainerName: string
-  teamName: string
   switchName: string
   playerId: string
   birth: string
@@ -20,7 +19,6 @@ export interface PlayerInfo {
 export const EMPTY_PLAYER: PlayerInfo = {
   playerName: '',
   trainerName: '',
-  teamName: '',
   switchName: '',
   playerId: '',
   birth: '',
@@ -29,6 +27,8 @@ export const EMPTY_PLAYER: PlayerInfo = {
 
 export interface TeamsheetOptions {
   player: PlayerInfo
+  /** Battle Team number or name, as shown in the game. */
+  teamName: string
   paste: string
   ageDivision: AgeDivision
   sheets: SheetKind[]

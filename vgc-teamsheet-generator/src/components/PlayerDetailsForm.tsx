@@ -11,7 +11,6 @@ const FIELDS: {
 }[] = [
   { key: 'playerName', label: 'Player Name', maxLength: 45 },
   { key: 'trainerName', label: 'Trainer Name in Game' },
-  { key: 'teamName', label: 'Battle Team Number / Name' },
   { key: 'switchName', label: 'Switch Profile Name' },
   {
     key: 'playerId',

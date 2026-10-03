@@ -189,7 +189,7 @@ function drawSheet(doc: jsPDF, sheet: SheetKind, entries: TeamsheetEntry[], opti
   doc.setFontSize(13)
   doc.text(player.playerName, 47, 33)
   doc.text(player.trainerName, 47, 40)
-  doc.text(player.teamName, 47, 47)
+  doc.text(options.teamName, 47, 47)
   doc.text(player.switchName, 47, 54)
 
   // Pokémon boxes, two columns by three rows
