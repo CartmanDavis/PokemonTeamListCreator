@@ -28,9 +28,9 @@ describe('TeamCheckResults', () => {
   })
 
   it('shows notes', () => {
-    const checks = [{ label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: 'Inferred from the stats' }]
+    const checks = [{ label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: 'Inferred from species stats' }]
     render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks }]} />)
-    expect(screen.getByRole('img', { name: 'Inferred from the stats' })).toHaveAttribute('title', 'Inferred from the stats')
+    expect(screen.getByRole('img', { name: 'Inferred from species stats' })).toHaveAttribute('title', 'Inferred from species stats')
   })
 
   it('shows a dash for an empty value', () => {

@@ -12,7 +12,7 @@ export interface Check {
   /** What the screenshot shows. */
   found: string
   ok: boolean
-  /** Something to flag about the row that isn't an error, e.g. "Inferred from the stats". */
+  /** Something to flag about the row that isn't an error, e.g. "Inferred from species stats". */
   note?: string
 }
 
@@ -144,7 +144,7 @@ function nameChecks(poke: Pokemon, shownAs: string, species: string[] | undefine
       : species.length > 0
         ? species.join(' or ')
         : "Unknown (stats don't fit any Pokémon)"
-    pokemon = { label: 'Pokémon', expected: poke.name, found, ok: species.includes(poke.name), note: 'Inferred from the stats' }
+    pokemon = { label: 'Pokémon', expected: poke.name, found, ok: species.includes(poke.name), note: 'Inferred from species stats' }
   } else if (showsNickname) {
     pokemon = { label: 'Pokémon', expected: poke.name, found: poke.name, ok: true, note: 'Inferred from the nickname' }
   } else {

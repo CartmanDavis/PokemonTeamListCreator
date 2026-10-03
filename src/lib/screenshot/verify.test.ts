@@ -19,7 +19,7 @@ describe('verifyTeam', () => {
   it('infers the species of a nicknamed Pokémon from its stats', () => {
     const reports = verifyTeam(team(paste), { moves: movesScreen, stats: statsScreen })
     expect(reports[0].checks.slice(0, 2)).toEqual([
-      { label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: 'Inferred from the stats' },
+      { label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: 'Inferred from species stats' },
       { label: 'Nickname', expected: 'Chompy', found: 'Chompy', ok: true },
     ])
   })
@@ -46,7 +46,7 @@ describe('verifyTeam', () => {
   it('accepts a nickname missing from the paste', () => {
     const reports = verifyTeam(team(paste.replace('Chompy (Garchomp)', 'Garchomp')), { moves: movesScreen, stats: statsScreen })
     expect(reports[0].checks.slice(0, 2)).toEqual([
-      { label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: 'Inferred from the stats' },
+      { label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: 'Inferred from species stats' },
       { label: 'Nickname', expected: '', found: 'Chompy', ok: true },
     ])
   })
