@@ -1,10 +1,7 @@
 import type { Lang } from '../lib/types'
-import { OptionGroup, type Option } from './OptionGroup'
 import './LanguageSelector.css'
 
-const LANGUAGES: Option<Lang>[] = [
-  { value: 'Cht', label: 'Traditional Chinese' },
-  { value: 'Chs', label: 'Simplified Chinese' },
+const LANGUAGES: { value: Lang; label: string }[] = [
   { value: 'En', label: 'English' },
   { value: 'Es', label: 'Spanish' },
   { value: 'Fre', label: 'French' },
@@ -12,6 +9,8 @@ const LANGUAGES: Option<Lang>[] = [
   { value: 'Ita', label: 'Italian' },
   { value: 'Jpn', label: 'Japanese' },
   { value: 'Kor', label: 'Korean' },
+  { value: 'Chs', label: 'Simplified Chinese' },
+  { value: 'Cht', label: 'Traditional Chinese' },
 ]
 
 interface LanguageSelectorProps {
@@ -21,13 +20,15 @@ interface LanguageSelectorProps {
 
 export function LanguageSelector({ value, onChange }: LanguageSelectorProps) {
   return (
-    <OptionGroup
-      name="lang"
-      label="Team list language"
-      className="language-selector"
-      options={LANGUAGES}
-      isSelected={(lang) => lang === value}
-      onToggle={onChange}
-    />
+    <label className="language-selector">
+      <span>Team list language</span>
+      <select value={value} onChange={(event) => onChange(event.target.value as Lang)}>
+        {LANGUAGES.map((lang) => (
+          <option key={lang.value} value={lang.value}>
+            {lang.label}
+          </option>
+        ))}
+      </select>
+    </label>
   )
 }

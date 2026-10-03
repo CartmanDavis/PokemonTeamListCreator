@@ -18,20 +18,15 @@ function App() {
 
   return (
     <main className="app">
+      <h1 className="visually-hidden">VGC Teamsheet Generator</h1>
       <PlayerDetailsForm value={player} onChange={setPlayer} remember={remember} onRememberChange={setRemember} />
-
-      <div className="layout">
-        <TeamPanel teamName={teamName} onTeamNameChange={setTeamName} paste={paste} onPasteChange={setPaste} />
-
-        <div className="print-column">
-          <PrintSettings sheets={sheets} onSheetsChange={setSheets} lang={lang} onLangChange={setLang} />
-          <PrintActions
-            onPrint={() => print({ player, teamName, paste, sheets, lang })}
-            generating={generating}
-            error={error}
-          />
-        </div>
-      </div>
+      <TeamPanel teamName={teamName} onTeamNameChange={setTeamName} paste={paste} onPasteChange={setPaste} />
+      <PrintSettings sheets={sheets} onSheetsChange={setSheets} lang={lang} onLangChange={setLang} />
+      <PrintActions
+        onPrint={() => print({ player, teamName, paste, sheets, lang })}
+        generating={generating}
+        error={error}
+      />
     </main>
   )
 }

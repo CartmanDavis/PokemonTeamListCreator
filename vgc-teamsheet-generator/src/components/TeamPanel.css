@@ -1,18 +1,24 @@
-.team-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  width: 500px;
-  max-width: 100%;
-  /* Room for the team name's floating label. */
-  padding-top: 22px;
+.team-panel .text-field {
+  /* Room for the floating label. */
+  margin-top: 22px;
 }
 
 .team-panel textarea {
   box-sizing: border-box;
   width: 100%;
-  min-height: 720px;
-  padding: 5px;
-  border-radius: 5px;
+  min-height: 360px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
   font-family: Montserrat, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.team-panel textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
 }

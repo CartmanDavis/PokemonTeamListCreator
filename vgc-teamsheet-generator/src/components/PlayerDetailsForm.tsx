@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useId, useState } from 'react'
 import type { PlayerInfo } from '../lib/types'
 import { AgeDivisionSelector } from './AgeDivisionSelector'
 import { TextField } from './TextField'
@@ -29,6 +29,12 @@ const FIELDS: {
   },
 ]
 
+function summarize(player: PlayerInfo): string {
+  return [player.playerName || 'No name yet', `${player.ageDivision} Division`, player.playerId && `ID ${player.playerId}`]
+    .filter(Boolean)
+    .join(' · ')
+}
+
 interface PlayerDetailsFormProps {
   value: PlayerInfo
   onChange: (value: PlayerInfo) => void
@@ -38,15 +44,32 @@ interface PlayerDetailsFormProps {
 
 export function PlayerDetailsForm({ value, onChange, remember, onRememberChange }: PlayerDetailsFormProps) {
   const headingId = useId()
+  // Returning players with saved info start with the compact summary.
+  const [editing, setEditing] = useState(!remember)
+
+  if (!editing) {
+    return (
+      <section className="card player-details" aria-labelledby={headingId}>
+        <div className="card-header">
+          <h2 id={headingId}>Player Info</h2>
+          <button type="button" className="secondary-button" onClick={() => setEditing(true)}>
+            Edit
+          </button>
+        </div>
+        <p className="player-summary">{summarize(value)}</p>
+      </section>
+    )
+  }
+
   return (
-    <section className="player-details" aria-labelledby={headingId}>
-      <header>
+    <section className="card player-details" aria-labelledby={headingId}>
+      <div className="card-header">
         <h2 id={headingId}>Player Info</h2>
         <label className="remember" title="Stored only in this browser">
           <input type="checkbox" checked={remember} onChange={(event) => onRememberChange(event.target.checked)} />
           Save my info for next time
         </label>
-      </header>
+      </div>
 
       <div className="player-details-fields">
         {FIELDS.map(({ key, label, maxLength, help }) => (
@@ -61,10 +84,15 @@ export function PlayerDetailsForm({ value, onChange, remember, onRememberChange 
         ))}
       </div>
 
-      <AgeDivisionSelector
-        value={value.ageDivision}
-        onChange={(ageDivision) => onChange({ ...value, ageDivision })}
-      />
+      <div className="player-details-footer">
+        <AgeDivisionSelector
+          value={value.ageDivision}
+          onChange={(ageDivision) => onChange({ ...value, ageDivision })}
+        />
+        <button type="button" className="secondary-button" onClick={() => setEditing(false)}>
+          Done
+        </button>
+      </div>
     </section>
   )
 }

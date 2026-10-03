@@ -1,11 +1,14 @@
-.print-settings {
+.print-settings-row {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: flex-end;
   gap: 20px;
 }
 
-.print-settings .option-group {
-  width: 360px;
-  max-width: 100%;
-  box-sizing: border-box;
+.print-settings-row .option-group {
+  flex: 1 1 320px;
+}
+
+.print-settings-row .language-selector {
+  flex: 0 1 220px;
 }

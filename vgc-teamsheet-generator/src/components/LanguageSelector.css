@@ -1,5 +1,21 @@
 .language-selector {
+  display: flex;
   flex-direction: column;
-  align-items: stretch;
-  gap: 7px;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.language-selector select {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.language-selector select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }

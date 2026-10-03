@@ -11,10 +11,13 @@
   --accent: #af40ff;
   --gradient: linear-gradient(144deg, #af40ff, #5b42f3 50%, #00ddeb);
   --error: #ff6b81;
+  --surface: rgba(255, 255, 255, 0.04);
+  --border: rgba(255, 255, 255, 0.14);
 }
 
 body {
-  margin: 30px;
+  margin: 0;
+  padding: 32px 16px;
   background-color: var(--bg);
   color: var(--text);
   font-family: Montserrat, system-ui, sans-serif;
@@ -29,6 +32,45 @@ h2 {
 
 a {
   color: #8ab4ff;
+}
+
+/* A titled section of the page. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 20px;
+}
+
+.secondary-button {
+  padding: 6px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  border-color: var(--accent);
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 16px;
+  }
 }
 
 .visually-hidden {
