@@ -7,18 +7,15 @@ import { PrintActions } from './components/PrintActions'
 import { SheetSelector } from './components/SheetSelector'
 import { usePlayerInfo } from './hooks/usePlayerInfo'
 import { useTeamsheetPrinter } from './hooks/useTeamsheetPrinter'
-import { readUrlDefaults } from './lib/urlParams'
-import type { SheetKind } from './lib/types'
+import type { AgeDivision, Lang, SheetKind } from './lib/types'
 import './App.css'
-
-const urlDefaults = readUrlDefaults()
 
 function App() {
   const [paste, setPaste] = useState('')
-  const { player, setPlayer, remember, setRemember } = usePlayerInfo(urlDefaults.player)
-  const [ageDivision, setAgeDivision] = useState(urlDefaults.ageDivision)
+  const { player, setPlayer, remember, setRemember } = usePlayerInfo()
+  const [ageDivision, setAgeDivision] = useState<AgeDivision>('Master')
   const [sheets, setSheets] = useState<SheetKind[]>(['open', 'close'])
-  const [lang, setLang] = useState(urlDefaults.lang)
+  const [lang, setLang] = useState<Lang>('En')
   const { print, error, generating } = useTeamsheetPrinter()
 
   return (
