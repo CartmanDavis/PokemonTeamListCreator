@@ -7,6 +7,7 @@ import notoSansJpUrl from '../assets/fonts/NotoSansJP-Regular.ttf'
 import pretendardUrl from '../assets/fonts/Pretendard-Regular.ttf'
 import notoSansUrl from '../assets/fonts/NotoSans-Regular.ttf'
 import { TeamsheetError } from './errors'
+import { teamsheetFileName } from './fileName'
 import { loadFont } from './fonts'
 import { loadTranslations, translate, type Category, type Translations } from './i18n'
 import { Koffing, type Pokemon } from './koffing'
@@ -95,12 +96,7 @@ export async function generateTeamsheet(options: TeamsheetOptions): Promise<void
     drawSheet(doc, sheet, entries, options)
   })
 
-  doc.save(fileName(options.player.playerId, sheets))
-}
-
-function fileName(playerId: string, sheets: SheetKind[]): string {
-  if (sheets.length > 1) return `${playerId}-teamsheet.pdf`
-  return sheets[0] === 'open' ? `${playerId}-OTS.pdf` : `${playerId}-staff.pdf`
+  doc.save(teamsheetFileName(options.player.playerName, options.teamName, sheets))
 }
 
 function registerFont(doc: jsPDF, name: string, base64: string) {
