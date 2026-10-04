@@ -29,6 +29,7 @@ describe('TeamCheckResults', () => {
       />,
     )
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent('Your team is valid. This tool can make mistakes. Be sure to double check!')
     expect(screen.getByRole('heading', { name: 'Garchomp' })).toBeInTheDocument()
     expect(screen.getByRole('row', { name: 'Item Life Orb' })).not.toHaveClass('mismatch')
     const spe = screen.getByRole('row', { name: /^Spe/ })

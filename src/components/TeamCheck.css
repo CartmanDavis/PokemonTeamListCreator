@@ -32,6 +32,24 @@
   opacity: 0.6;
 }
 
+.team-check-valid {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(111, 227, 160, 0.45);
+  border-left: 4px solid #6fe3a0;
+  border-radius: 8px;
+  background: rgba(111, 227, 160, 0.1);
+  line-height: 1.5;
+}
+
+.team-check-valid svg {
+  flex: none;
+  color: #6fe3a0;
+}
+
 .team-check-results {
   display: grid;
   /* Two per row at most, dropping to one when a card would be narrower than 260px. */
