@@ -20,7 +20,7 @@ export interface Check {
   /** For a stat, whether the game's nature raises (+) or lowers (−) it. */
   foundNature?: NatureMark
   ok: boolean
-  /** Something to flag about the row that isn't an error, e.g. "Inferred from species stats". */
+  /** Something to flag about the row that isn't an error, e.g. why the species was inferred. */
   note?: string
 }
 
@@ -145,6 +145,7 @@ function nameChecks(poke: Pokemon, shownAs: string, species: string[] | undefine
   const nickname: Check = { label: 'Nickname', expected: poke.nickname ?? '', found: nicknameShown, ok: true }
   if (poke.nickname && nicknameShown && !showsNickname) nickname.note = 'Nickname does not match paste'
 
+  const because = `The screenshot shows the nickname "${shownAs}" instead of the species`
   let pokemon: Check
   if (showsSpecies && !showsNickname) {
     pokemon = { label: 'Pokémon', expected: poke.name, found: shownAs, ok: true }
@@ -154,9 +155,21 @@ function nameChecks(poke: Pokemon, shownAs: string, species: string[] | undefine
       : species.length > 0
         ? species.join(' or ')
         : "Unknown (stats don't fit any Pokémon)"
-    pokemon = { label: 'Pokémon', expected: poke.name, found, ok: species.includes(poke.name), note: 'Inferred from species stats' }
+    pokemon = {
+      label: 'Pokémon',
+      expected: poke.name,
+      found,
+      ok: species.includes(poke.name),
+      note: `${because}, so it was inferred from its stats`,
+    }
   } else if (showsNickname) {
-    pokemon = { label: 'Pokémon', expected: poke.name, found: poke.name, ok: true, note: 'Inferred from the nickname' }
+    pokemon = {
+      label: 'Pokémon',
+      expected: poke.name,
+      found: poke.name,
+      ok: true,
+      note: `${because}, so it was inferred from the matching nickname in your paste`,
+    }
   } else {
     pokemon = { label: 'Pokémon', expected: poke.name, found: 'Unknown (add the Stats screenshot to confirm the species)', ok: false }
   }

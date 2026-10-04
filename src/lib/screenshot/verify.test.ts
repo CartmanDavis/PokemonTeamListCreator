@@ -9,6 +9,8 @@ const failures = (reports: PokemonReport[]) =>
 /** The paste split into its Pokémon, so tests can reorder them. */
 const sets = paste.trim().split('\n\n')
 
+const fromStats = 'The screenshot shows the nickname "Chompy" instead of the species, so it was inferred from its stats'
+
 describe('verifyTeam', () => {
   it('passes a team that matches both screens', () => {
     const reports = verifyTeam(team(paste), { moves: movesScreen, stats: statsScreen })
@@ -19,7 +21,7 @@ describe('verifyTeam', () => {
   it('infers the species of a nicknamed Pokémon from its stats', () => {
     const reports = verifyTeam(team(paste), { moves: movesScreen, stats: statsScreen })
     expect(reports[0].checks.slice(0, 2)).toEqual([
-      { label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: 'Inferred from species stats' },
+      { label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: fromStats },
       { label: 'Nickname', expected: 'Chompy', found: 'Chompy', ok: true },
     ])
   })
@@ -31,7 +33,7 @@ describe('verifyTeam', () => {
       expected: 'Garchomp',
       found: 'Garchomp',
       ok: true,
-      note: 'Inferred from the nickname',
+      note: 'The screenshot shows the nickname "Chompy" instead of the species, so it was inferred from the matching nickname in your paste',
     })
   })
 
@@ -46,7 +48,7 @@ describe('verifyTeam', () => {
   it('accepts a nickname missing from the paste', () => {
     const reports = verifyTeam(team(paste.replace('Chompy (Garchomp)', 'Garchomp')), { moves: movesScreen, stats: statsScreen })
     expect(reports[0].checks.slice(0, 2)).toEqual([
-      { label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: 'Inferred from species stats' },
+      { label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: fromStats },
       { label: 'Nickname', expected: '', found: 'Chompy', ok: true },
     ])
   })
