@@ -96,10 +96,6 @@ export function PlayerDetailsForm({ value, onChange, remember, onRememberChange 
     <section className="card player-details" aria-labelledby={headingId}>
       <div className="card-header">
         <h2 id={headingId}>Player Info</h2>
-        <label className="remember" title="Stored only in this browser">
-          <input type="checkbox" checked={remember} onChange={(event) => onRememberChange(event.target.checked)} />
-          Save my info for next time
-        </label>
       </div>
 
       <div className="player-details-fields">
@@ -120,9 +116,15 @@ export function PlayerDetailsForm({ value, onChange, remember, onRememberChange 
           value={value.ageDivision}
           onChange={(ageDivision) => onChange({ ...value, ageDivision })}
         />
-        <button type="button" className="secondary-button" onClick={() => setEditing(false)}>
-          Done
-        </button>
+        <div className="player-details-actions">
+          <label className="remember" title="Stored only in this browser">
+            <input type="checkbox" checked={remember} onChange={(event) => onRememberChange(event.target.checked)} />
+            Save my info for next time
+          </label>
+          <button type="button" className="secondary-button" onClick={() => setEditing(false)}>
+            Done
+          </button>
+        </div>
       </div>
     </section>
   )
