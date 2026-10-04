@@ -1,7 +1,6 @@
 // @vitest-environment jsdom
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router'
 import { afterEach, describe, expect, it } from 'vitest'
 import { AppRoutes } from './AppRoutes'
 
@@ -9,11 +8,7 @@ afterEach(() => localStorage.clear())
 
 function setup() {
   const user = userEvent.setup()
-  render(
-    <MemoryRouter>
-      <AppRoutes />
-    </MemoryRouter>,
-  )
+  render(<AppRoutes />)
   return {
     user,
     team: within(screen.getByRole('region', { name: 'Team Info' })),

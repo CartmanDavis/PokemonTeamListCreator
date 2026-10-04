@@ -4,9 +4,8 @@ import { TextField } from './TextField'
 import './TeamPanel.css'
 
 interface TeamPanelProps {
-  /** Leave out to show only the paste, without the team name field. */
-  teamName?: string
-  onTeamNameChange?: (value: string) => void
+  teamName: string
+  onTeamNameChange: (value: string) => void
   paste: string
   onPasteChange: (value: string) => void
   /** Problems found in the paste on the last print attempt. */
@@ -21,9 +20,7 @@ export function TeamPanel({ teamName, onTeamNameChange, paste, onPasteChange, is
   return (
     <section className="card team-panel" aria-labelledby={headingId}>
       <h2 id={headingId}>Team Info</h2>
-      {onTeamNameChange && (
-        <TextField label="Battle Team Number / Name" value={teamName ?? ''} onChange={onTeamNameChange} />
-      )}
+      <TextField label="Battle Team Number / Name" value={teamName} onChange={onTeamNameChange} />
       <textarea
         aria-label="Showdown team paste"
         aria-invalid={issues ? true : undefined}

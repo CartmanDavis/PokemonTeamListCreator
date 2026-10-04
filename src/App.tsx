@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Footer } from './components/Footer'
 import { Header } from './components/Header'
+import { SiteNav } from './components/SiteNav'
 import { PlayerDetailsForm } from './components/PlayerDetailsForm'
 import { PrintActions } from './components/PrintActions'
 import { PrintSettings } from './components/PrintSettings'
@@ -11,13 +12,14 @@ import type { Lang, SheetKind } from './lib/types'
 import './App.css'
 
 interface AppProps {
-  /** Shared with the team check page, so the paste carries over between them. */
+  /** Shared with the team check page, so the team carries over between them. */
+  teamName: string
+  onTeamNameChange: (value: string) => void
   paste: string
   onPasteChange: (value: string) => void
 }
 
-function App({ paste, onPasteChange }: AppProps) {
-  const [teamName, setTeamName] = useState('')
+function App({ teamName, onTeamNameChange, paste, onPasteChange }: AppProps) {
   const { player, setPlayer, remember, setRemember } = usePlayerInfo()
   const [sheets, setSheets] = useState<SheetKind[]>(['open', 'close'])
   const [lang, setLang] = useState<Lang>('En')
@@ -26,11 +28,12 @@ function App({ paste, onPasteChange }: AppProps) {
   return (
     <div className="page">
       <Header />
+      <SiteNav current="generate" />
       <main className="app">
         <PlayerDetailsForm value={player} onChange={setPlayer} remember={remember} onRememberChange={setRemember} />
         <TeamPanel
           teamName={teamName}
-          onTeamNameChange={setTeamName}
+          onTeamNameChange={onTeamNameChange}
           paste={paste}
           onPasteChange={(value) => {
             onPasteChange(value)
