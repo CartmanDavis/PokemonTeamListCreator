@@ -68,14 +68,10 @@ export function TeamCheck({ paste }: TeamCheckProps) {
  * it should be beside it, and warnings sit beside the field they're about.
  */
 export function TeamCheckResults({ reports }: { reports: PokemonReport[] }) {
-  const problems = reports.filter((report) => report.checks.some((c) => !c.ok)).length
+  const problems = reports.some((report) => report.checks.some((c) => !c.ok))
   return (
     <>
-      {problems > 0 && (
-        <Alert title="There were issues found with your in-game team">
-          <p>{problems === 1 ? '1 Pokémon doesn’t' : `${problems} Pokémon don’t`} match your paste.</p>
-        </Alert>
-      )}
+      {problems && <Alert title="There were issues found with your in-game team" />}
       <div className="team-check-results">
         {reports.map((report, i) => (
           <section key={i} className="team-check-pokemon" aria-label={report.name}>

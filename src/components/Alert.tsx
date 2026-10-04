@@ -4,7 +4,7 @@ import './Alert.css'
 interface AlertProps {
   id?: string
   title: string
-  children: ReactNode
+  children?: ReactNode
 }
 
 /** An error message that scrolls into view and takes focus when it appears. */

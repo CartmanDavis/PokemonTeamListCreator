@@ -36,7 +36,7 @@ describe('TeamCheckResults', () => {
     expect(spe.querySelector('s')).toBeNull()
   })
 
-  it('says how many Pokémon have errors', () => {
+  it('says when the team has errors', () => {
     const wrong = [{ label: 'Item', expected: 'Choice Scarf', found: 'Life Orb', ok: false }]
     render(
       <TeamCheckResults
@@ -47,8 +47,7 @@ describe('TeamCheckResults', () => {
         ]}
       />,
     )
-    expect(screen.getByRole('alert')).toHaveTextContent('There were issues found with your in-game team')
-    expect(screen.getByRole('alert')).toHaveTextContent('2 Pokémon don’t match your paste.')
+    expect(screen.getByRole('alert')).toHaveTextContent(/^!There were issues found with your in-game team$/)
   })
 
   it('strikes through a wrong value and shows the paste value after it', () => {
