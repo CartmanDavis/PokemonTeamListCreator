@@ -1,6 +1,7 @@
-import { useId, useState } from 'react'
+import { CircleAlert } from 'lucide-react'
+import { useId, useState, type ReactNode } from 'react'
 import { useTeamCheck } from '../hooks/useTeamCheck'
-import type { PokemonReport } from '../lib/screenshot/verify'
+import type { Check, PokemonReport } from '../lib/screenshot/verify'
 import { Alert, AlertMessages } from './Alert'
 import './TeamCheck.css'
 
@@ -62,44 +63,88 @@ export function TeamCheck({ paste }: TeamCheckProps) {
   )
 }
 
+/**
+ * What the game shows for each Pokémon. A wrong value is struck through with what the paste says
+ * it should be beside it, and warnings sit beside the field they're about.
+ */
 export function TeamCheckResults({ reports }: { reports: PokemonReport[] }) {
-  const problems = reports.reduce((sum, report) => sum + report.checks.filter((c) => !c.ok).length, 0)
+  const problems = reports.some((report) => report.checks.some((c) => !c.ok))
   return (
-    <div className="team-check-results">
-      <p className={problems === 0 ? 'team-check-summary ok' : 'team-check-summary'} role="status">
-        {problems === 0
-          ? 'Your team is valid. This tool can make mistakes. Be sure to double check!'
-          : `${problems} ${problems === 1 ? 'error' : 'errors'}`}
-      </p>
-      {reports.map((report, i) => {
-        const wrong = report.checks.filter((c) => !c.ok)
-        return (
-          <details key={i} className="team-check-pokemon" open={wrong.length > 0}>
-            <summary>
-              <span aria-hidden="true">{wrong.length === 0 ? '✓' : '✗'}</span> {report.name}
-              {wrong.length > 0 && ` (${wrong.length} ${wrong.length === 1 ? 'error' : 'errors'})`}
-            </summary>
+    <>
+      {problems && <Alert title="There were issues found with your in-game team" />}
+      <div className="team-check-results">
+        {reports.map((report, i) => (
+          <section key={i} className="team-check-pokemon" aria-label={report.name}>
+            <h3>{report.name}</h3>
             <table>
-              <thead>
-                <tr>
-                  <th scope="col" />
-                  <th scope="col">Paste</th>
-                  <th scope="col">Game</th>
-                </tr>
-              </thead>
               <tbody>
                 {report.checks.map((c, i) => (
                   <tr key={i} className={c.ok ? undefined : 'mismatch'}>
                     <th scope="row">{c.label}</th>
-                    <td>{c.expected}</td>
-                    <td>{c.found}</td>
+                    <td>
+                      {c.foundDetail !== undefined ? (
+                        <StatValue check={c} />
+                      ) : c.ok ? (
+                        <Value text={c.found} />
+                      ) : (
+                        <>
+                          <s>
+                            <Value text={c.found} />
+                          </s>
+                          <span className="team-check-expected">{c.expected || 'nothing'}</span>
+                        </>
+                      )}
+                      {c.note && (
+                        <span className="team-check-note" role="img" aria-label={c.note} title={c.note}>
+                          <CircleAlert size={16} aria-hidden="true" />
+                        </span>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </details>
-        )
-      })}
-    </div>
+          </section>
+        ))}
+      </div>
+    </>
   )
+}
+
+function Value({ text }: { text: string }) {
+  return text || <span className="team-check-blank">-</span>
+}
+
+/**
+ * A stat's points, with the nature's + or −, then the stat itself, each in a column of its own
+ * so they line up from row to row. Whichever is wrong is struck through with the paste's value
+ * beside it.
+ */
+function StatValue({ check: c }: { check: Check }) {
+  const pointsOk = c.found === c.expected && c.foundNature === c.expectedNature
+  const totalOk = c.foundDetail === c.expectedDetail
+  return (
+    <>
+      <span className="team-check-stat-points">
+        <Struck when={!pointsOk}>
+          <span className="team-check-number">{c.found}</span>
+          <span className="team-check-nature">{c.foundNature}</span>
+        </Struck>
+        {!pointsOk && (
+          <span className="team-check-expected">
+            {c.expected}
+            {c.expectedNature}
+          </span>
+        )}
+      </span>
+      <Struck when={!totalOk}>
+        <span className="team-check-number team-check-total">{c.foundDetail}</span>
+      </Struck>
+      {!totalOk && <span className="team-check-expected">{c.expectedDetail}</span>}
+    </>
+  )
+}
+
+function Struck({ when, children }: { when: boolean; children: ReactNode }) {
+  return when ? <s>{children}</s> : children
 }

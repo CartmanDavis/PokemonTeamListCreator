@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { TeamCheckResults } from './TeamCheck'
 
 describe('TeamCheckResults', () => {
-  it('opens the Pokémon with problems and counts them', () => {
+  it('shows what the game has for each Pokémon', () => {
     render(
       <TeamCheckResults
         reports={[
@@ -13,29 +13,79 @@ describe('TeamCheckResults', () => {
             gameSlot: 1,
             name: 'Charizard',
             checks: [
-              { label: 'Ability', expected: 'Solar Power', found: 'Blaze', ok: false },
-              { label: 'Spe', expected: '139 (19 pts)', found: '140 (20 pts)', ok: false },
+              {
+                label: 'Spe',
+                expected: '20',
+                expectedDetail: '140',
+                expectedNature: '+' as const,
+                found: '20',
+                foundDetail: '140',
+                foundNature: '+' as const,
+                ok: true,
+              },
             ],
           },
         ]}
       />,
     )
-    expect(screen.getByRole('status')).toHaveTextContent(/^2 errors$/)
-    expect(screen.getByText(/Garchomp/).closest('details')).not.toHaveAttribute('open')
-    expect(screen.getByText(/Charizard/).closest('details')).toHaveAttribute('open')
-    expect(screen.getByText(/Charizard/)).toHaveTextContent('Charizard (2 errors)')
-    expect(screen.getByRole('row', { name: 'Ability Solar Power Blaze' })).toHaveClass('mismatch')
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Garchomp' })).toBeInTheDocument()
+    expect(screen.getByRole('row', { name: 'Item Life Orb' })).not.toHaveClass('mismatch')
+    const spe = screen.getByRole('row', { name: /^Spe/ })
+    expect(spe).toHaveTextContent('20+140')
+    expect(spe.querySelector('s')).toBeNull()
   })
 
-  it('uses the singular for one error', () => {
+  it('says when the team has errors', () => {
+    const wrong = [{ label: 'Item', expected: 'Choice Scarf', found: 'Life Orb', ok: false }]
+    render(
+      <TeamCheckResults
+        reports={[
+          { gameSlot: 0, name: 'Garchomp', checks: wrong },
+          { gameSlot: 1, name: 'Charizard', checks: wrong },
+          { gameSlot: 2, name: 'Incineroar', checks: [] },
+        ]}
+      />,
+    )
+    expect(screen.getByRole('alert')).toHaveTextContent(/^!There were issues found with your in-game team$/)
+  })
+
+  it('strikes through a wrong value and shows the paste value after it', () => {
     const checks = [{ label: 'Item', expected: 'Choice Scarf', found: 'Life Orb', ok: false }]
     render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks }]} />)
-    expect(screen.getByRole('status')).toHaveTextContent(/^1 error$/)
-    expect(screen.getByText(/Garchomp/)).toHaveTextContent('Garchomp (1 error)')
+    expect(screen.getByRole('row', { name: /^Item/ })).toHaveClass('mismatch')
+    expect(screen.getByText('Life Orb').closest('s')).not.toBeNull()
+    expect(screen.getByText('Choice Scarf').closest('s')).toBeNull()
   })
 
-  it('says when everything matches', () => {
-    render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks: [] }]} />)
-    expect(screen.getByRole('status')).toHaveTextContent('Your team is valid. This tool can make mistakes. Be sure to double check!')
+  it('strikes through only the part of a stat that is wrong', () => {
+    const stat = (label: string, found: string, foundDetail: string) => ({
+      label,
+      expected: '30',
+      expectedDetail: '150',
+      found,
+      foundDetail,
+      ok: false,
+    })
+    const checks = [stat('SpA', '32', '150'), stat('SpD', '30', '152')]
+    render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks }]} />)
+    const struck = (label: string) =>
+      [...screen.getByRole('row', { name: new RegExp(`^${label}`) }).querySelectorAll('s')].map((s) => s.textContent)
+    expect(struck('SpA')).toEqual(['32'])
+    expect(struck('SpD')).toEqual(['152'])
+    expect(screen.getByRole('row', { name: /^SpA/ })).toHaveTextContent('3230150')
+  })
+
+  it('shows notes beside their field', () => {
+    const checks = [{ label: 'Pokémon', expected: 'Garchomp', found: 'Garchomp', ok: true, note: 'Inferred from species stats' }]
+    render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks }]} />)
+    const note = within(screen.getByRole('row', { name: /^Pokémon Garchomp/ })).getByRole('img', { name: 'Inferred from species stats' })
+    expect(note).toHaveAttribute('title', 'Inferred from species stats')
+  })
+
+  it('shows a dash for an empty value', () => {
+    const checks = [{ label: 'Nickname', expected: 'Chompy', found: '', ok: true }]
+    render(<TeamCheckResults reports={[{ gameSlot: 0, name: 'Garchomp', checks }]} />)
+    expect(screen.getByRole('row', { name: 'Nickname -' })).toBeInTheDocument()
   })
 })

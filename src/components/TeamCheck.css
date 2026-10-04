@@ -33,18 +33,10 @@
 }
 
 .team-check-results {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.team-check-summary {
-  margin: 0 0 4px;
-  color: var(--error);
-}
-
-.team-check-summary.ok {
-  color: #6fe3a0;
+  display: grid;
+  /* Two per row at most, dropping to one when a card would be narrower than 260px. */
+  grid-template-columns: repeat(auto-fill, minmax(max(260px, calc((100% - 12px) / 2)), 1fr));
+  gap: 12px;
 }
 
 .team-check-pokemon {
@@ -53,9 +45,10 @@
   background: var(--bg);
 }
 
-.team-check-pokemon summary {
+.team-check-pokemon h3 {
+  margin: 0;
   padding: 10px 14px;
-  cursor: pointer;
+  font-size: 16px;
 }
 
 .team-check-pokemon table {
@@ -72,11 +65,60 @@
   font-weight: normal;
 }
 
-.team-check-pokemon thead th,
-.team-check-pokemon tbody th {
+.team-check-pokemon th {
+  width: 1%;
+  color: var(--label);
+  white-space: nowrap;
+}
+
+.team-check-pokemon tr.mismatch s,
+.team-check-pokemon tr.mismatch s .team-check-total {
+  color: var(--error);
+}
+
+/* Inline blocks don't inherit the strike-through, so the stat numbers need their own. */
+.team-check-pokemon tr.mismatch s .team-check-number {
+  text-decoration: line-through;
+}
+
+.team-check-expected {
+  margin-left: 1ch;
+  color: #8c8c90;
+  font-style: italic;
+  font-size: 12px;
+}
+
+.team-check-number {
+  display: inline-block;
+  min-width: 2ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.team-check-nature {
+  display: inline-block;
+  width: 1ch;
+}
+
+.team-check-stat-points {
+  display: inline-block;
+  min-width: 13ch;
+}
+
+.team-check-total {
+  min-width: 3ch;
   color: var(--label);
 }
 
-.team-check-pokemon tr.mismatch td {
-  color: var(--error);
+.team-check-blank {
+  color: var(--label);
+  opacity: 0.6;
+}
+
+.team-check-note {
+  display: inline-flex;
+  margin-left: 6px;
+  color: #f5c451;
+  vertical-align: text-bottom;
+  cursor: help;
 }

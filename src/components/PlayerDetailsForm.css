@@ -35,6 +35,14 @@
   gap: 16px;
 }
 
+.player-details-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+}
+
 .player-details-footer .option-group {
   flex: 0 1 360px;
 }

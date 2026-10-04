@@ -1,0 +1,41 @@
+.site-nav {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.site-nav a {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: -1px;
+  padding: 10px 16px;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  color: var(--text);
+}
+
+.site-nav a[aria-current='page'] {
+  border-bottom-color: var(--accent);
+  color: var(--text);
+}
+
+.site-nav a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* A small version of the site header's gradient title. */
+.beta-badge {
+  background: var(--gradient);
+  background-clip: text;
+  color: transparent;
+  font-size: 12px;
+  font-weight: bold;
+}

@@ -1,12 +1,20 @@
 import { useEffect } from 'react'
 import { Footer, X_URL } from './components/Footer'
 import { Header } from './components/Header'
+import { SiteNav } from './components/SiteNav'
 import { TeamCheck } from './components/TeamCheck'
 import { TeamPanel } from './components/TeamPanel'
 import './App.css'
 
 /** The #/teamcheck page: checks a paste against screenshots of the in-game team. */
-function TeamCheckApp({ paste, onPasteChange }: { paste: string; onPasteChange: (value: string) => void }) {
+interface TeamCheckAppProps {
+  teamName: string
+  onTeamNameChange: (value: string) => void
+  paste: string
+  onPasteChange: (value: string) => void
+}
+
+function TeamCheckApp({ teamName, onTeamNameChange, paste, onPasteChange }: TeamCheckAppProps) {
   useEffect(() => {
     const previous = document.title
     document.title = 'In-Game Team Check · VGC Teamsheet Generator'
@@ -18,6 +26,7 @@ function TeamCheckApp({ paste, onPasteChange }: { paste: string; onPasteChange: 
   return (
     <div className="page">
       <Header title="In-Game Team Check" />
+      <SiteNav current="teamcheck" />
       <main className="app">
         <p className="beta-notice">
           <strong>This feature is in beta.</strong> If you run into problems, DM me on{' '}
@@ -26,7 +35,7 @@ function TeamCheckApp({ paste, onPasteChange }: { paste: string; onPasteChange: 
           </a>{' '}
           with your screenshots, device model, and paste.
         </p>
-        <TeamPanel paste={paste} onPasteChange={onPasteChange} />
+        <TeamPanel teamName={teamName} onTeamNameChange={onTeamNameChange} paste={paste} onPasteChange={onPasteChange} />
         <TeamCheck paste={paste} />
       </main>
       <Footer />

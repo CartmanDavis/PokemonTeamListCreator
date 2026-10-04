@@ -7,11 +7,21 @@ import type { MovesScreenPokemon, NatureArrows, StatsScreenPokemon } from './rea
 
 export interface Check {
   label: string
-  /** What the teamsheet says. */
+  /** What the teamsheet says; empty when there's nothing, like no nickname. */
   expected: string
   /** What the screenshot shows. */
   found: string
+  /** Secondary information shown after `expected`, e.g. the stat a stat point investment comes to. */
+  expectedDetail?: string
+  /** Secondary information shown after `found`. */
+  foundDetail?: string
+  /** For a stat, whether the paste's nature raises (+) or lowers (−) it. */
+  expectedNature?: NatureMark
+  /** For a stat, whether the game's nature raises (+) or lowers (−) it. */
+  foundNature?: NatureMark
   ok: boolean
+  /** Something to flag about the row that isn't an error, e.g. why the species was inferred. */
+  note?: string
 }
 
 export interface PokemonReport {
@@ -26,6 +36,8 @@ export interface TeamScreens {
   moves?: MovesScreenPokemon[]
   stats?: StatsScreenPokemon[]
 }
+
+export type NatureMark = '+' | '−'
 
 const STAT_NAMES: Record<StatId, string> = { hp: 'HP', atk: 'Atk', def: 'Def', spa: 'SpA', spd: 'SpD', spe: 'Spe' }
 
@@ -52,7 +64,7 @@ export function verifyTeam(team: Pokemon[], screens: TeamScreens): PokemonReport
     }
     const moves = screens.moves?.[slot]
     const stats = screens.stats?.[slot]
-    const checks = [pokemonCheck(poke, shownAs(slot), stats && species[slot])]
+    const checks = nameChecks(poke, shownAs(slot), stats && species[slot])
     if (moves) checks.push(...movesScreenChecks(poke, moves))
     if (stats) checks.push(...statsScreenChecks(poke, stats))
     return { name: poke.name, gameSlot: slot, checks }
@@ -121,23 +133,47 @@ function pairUp(count: number, slots: number, score: (i: number, slot: number) =
 }
 
 /**
- * The game shows a nickname instead of the species when there is one, and leaves off forms.
- * A nickname the paste doesn't have is fine as long as the stats fit the species; the stats
- * check catches the wrong form.
+ * The game shows a nickname instead of the species when there is one, and leaves off forms, so
+ * the species of a nicknamed Pokémon is inferred from its stats, or failing that its nickname.
+ * The stats check catches the wrong form.
  */
-function pokemonCheck(poke: Pokemon, shownAs: string, species: string[] | undefined): Check {
-  const expected = poke.nickname ? `${poke.name} (${poke.nickname})` : poke.name
-  if (namesFor(poke).some((name) => looksLike(shownAs, name))) {
-    return { label: 'Pokémon', expected, found: shownAs, ok: true }
+function nameChecks(poke: Pokemon, shownAs: string, species: string[] | undefined): Check[] {
+  const showsSpecies = [poke.name, poke.name.split('-')[0]].some((name) => looksLike(shownAs, name))
+  const showsNickname = !!poke.nickname && looksLike(shownAs, poke.nickname)
+  const nicknameShown = showsNickname || !showsSpecies ? shownAs : ''
+  // Nicknames don't affect the team, so a different one is only worth a warning.
+  const nickname: Check = { label: 'Nickname', expected: poke.nickname ?? '', found: nicknameShown, ok: true }
+  if (poke.nickname && nicknameShown && !showsNickname) nickname.note = 'Nickname does not match paste'
+
+  const usesNickname = 'In-game screenshot uses a nickname'
+  let pokemon: Check
+  if (showsSpecies && !showsNickname) {
+    pokemon = { label: 'Pokémon', expected: poke.name, found: shownAs, ok: true }
+  } else if (species) {
+    const found = species.includes(poke.name)
+      ? poke.name
+      : species.length > 0
+        ? species.join(' or ')
+        : "Unknown (stats don't fit any Pokémon)"
+    pokemon = {
+      label: 'Pokémon',
+      expected: poke.name,
+      found,
+      ok: species.includes(poke.name),
+      note: usesNickname,
+    }
+  } else if (showsNickname) {
+    pokemon = {
+      label: 'Pokémon',
+      expected: poke.name,
+      found: poke.name,
+      ok: true,
+      note: usesNickname,
+    }
+  } else {
+    pokemon = { label: 'Pokémon', expected: poke.name, found: 'Unknown (add the Stats screenshot to confirm the species)', ok: false }
   }
-  if (!species) {
-    return { label: 'Pokémon', expected, found: `${shownAs} (add the Stats screenshot to confirm the species)`, ok: false }
-  }
-  if (species.includes(poke.name)) {
-    return { label: 'Pokémon', expected, found: `${shownAs} (stats fit ${poke.name})`, ok: true }
-  }
-  const fits = species.length > 0 ? `stats fit ${species.join(' or ')}` : "stats don't fit any Pokémon"
-  return { label: 'Pokémon', expected, found: `${shownAs} (${fits})`, ok: false }
+  return [pokemon, nickname]
 }
 
 function movesScreenChecks(poke: Pokemon, shown: MovesScreenPokemon): Check[] {
@@ -172,7 +208,7 @@ function statsScreenChecks(poke: Pokemon, shown: StatsScreenPokemon): Check[] {
   const checks: Check[] = [
     {
       label: 'Nature',
-      expected: expectedArrows ? `${nature} (${describeArrows(expectedArrows)})` : `${nature} (not a nature)`,
+      expected: expectedArrows ? nature : `${nature} (not a nature)`,
       found: describeShownNature(shown.nature),
       ok: !!expectedArrows && expectedArrows.up === shown.nature.up && expectedArrows.down === shown.nature.down,
     },
@@ -181,13 +217,23 @@ function statsScreenChecks(poke: Pokemon, shown: StatsScreenPokemon): Check[] {
   const base = getBaseStats(poke.name)
   const points = fillSpread(poke.evs)
   const expected = base && modifiers ? getChampionsStats(base, points, modifiers) : undefined
-  const describe = (stat?: number, pts?: number) => `${stat ?? '?'} (${pts ?? '?'} pts)`
+  const describe = (n?: number) => `${n ?? '?'}`
+  // Like a paste's "252+ Atk", the stats a nature raises and lowers are marked.
+  const mark = (arrows: NatureArrows | undefined, stat: StatId): NatureMark | undefined =>
+    stat === arrows?.up ? '+' : stat === arrows?.down ? '−' : undefined
   for (const stat of STAT_IDS) {
+    const expectedNature = mark(expectedArrows, stat)
+    const foundNature = mark(shown.nature, stat)
     checks.push({
       label: STAT_NAMES[stat],
-      expected: describe(expected?.[stat], points[stat]),
-      found: describe(shown.stats[stat], shown.points[stat]),
-      ok: expected?.[stat] === shown.stats[stat] && points[stat] === shown.points[stat],
+      expected: describe(points[stat]),
+      expectedDetail: describe(expected?.[stat]),
+      expectedNature,
+      found: describe(shown.points[stat]),
+      foundDetail: describe(shown.stats[stat]),
+      foundNature,
+      // A stat can come out the same under a different nature, so its + or − is checked too.
+      ok: expected?.[stat] === shown.stats[stat] && points[stat] === shown.points[stat] && expectedNature === foundNature,
     })
   }
   return checks
@@ -208,11 +254,6 @@ function modifiersFromArrows({ up, down }: NatureArrows): Stats {
   return modifiers
 }
 
-function describeArrows({ up, down }: NatureArrows): string {
-  if (!up && !down) return 'neutral'
-  return [up && `+${STAT_NAMES[up]}`, down && `−${STAT_NAMES[down]}`].filter(Boolean).join(' ')
-}
-
 const natureTable: Record<string, Stats> = natures
 
 /**
@@ -225,7 +266,7 @@ function describeShownNature(arrows: NatureArrows): string {
     const { up, down } = arrowsFromModifiers(natureTable[nature])
     return up === arrows.up && down === arrows.down
   })
-  return `${name ?? 'Unknown'} (${describeArrows(arrows)})`
+  return name ?? 'Unknown'
 }
 
 const baseStatTable: Record<string, Stats> = pokedex
