@@ -1,3 +1,4 @@
+import { Info } from 'lucide-react'
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import './InfoTip.css'
 
@@ -51,7 +52,7 @@ export function InfoTip({ label, children }: InfoTipProps) {
         aria-controls={bubbleId}
         onClick={() => setOpen((current) => !current)}
       >
-        i
+        <Info size={22} aria-hidden="true" />
       </button>
       <div id={bubbleId} className="info-tip-bubble" hidden={!open}>
         {children}

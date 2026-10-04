@@ -8,22 +8,16 @@
   width: 22px;
   height: 22px;
   padding: 0;
-  border: 1.5px solid var(--muted);
+  border: 0;
   border-radius: 50%;
   background: transparent;
   color: var(--muted);
-  font: inherit;
-  font-size: 13px;
-  font-weight: bold;
-  font-style: italic;
-  line-height: 1;
   cursor: pointer;
 }
 
 .info-tip-button:hover,
 .info-tip-button[aria-expanded='true'] {
-  border-color: var(--accent);
-  color: var(--text);
+  color: var(--accent);
 }
 
 .info-tip-button:focus-visible {
