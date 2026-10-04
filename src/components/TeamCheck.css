@@ -72,7 +72,7 @@
 }
 
 .team-check-pokemon tr.mismatch s,
-.team-check-pokemon tr.mismatch s .team-check-detail {
+.team-check-pokemon tr.mismatch s .team-check-total {
   color: var(--error);
 }
 
@@ -81,12 +81,11 @@
   text-decoration: line-through;
 }
 
-.team-check-paste {
-  white-space: nowrap;
-}
-
-.team-check-paste-label {
-  color: var(--label);
+.team-check-expected {
+  margin-left: 1ch;
+  color: #8c8c90;
+  font-style: italic;
+  font-size: 12px;
 }
 
 .team-check-number {
@@ -96,8 +95,18 @@
   font-variant-numeric: tabular-nums;
 }
 
-.team-check-pokemon tr td .team-check-detail {
-  min-width: 5ch;
+.team-check-nature {
+  display: inline-block;
+  width: 1ch;
+}
+
+.team-check-stat-points {
+  display: inline-block;
+  min-width: 13ch;
+}
+
+.team-check-total {
+  min-width: 3ch;
   color: var(--label);
 }
 
@@ -107,16 +116,9 @@
 }
 
 .team-check-note {
-  display: inline-grid;
-  place-items: center;
-  width: 16px;
-  height: 16px;
+  display: inline-flex;
   margin-left: 6px;
-  border-radius: 50%;
-  background: #f5c451;
-  color: #1a1a1a;
-  font-size: 11px;
-  font-weight: bold;
+  color: #f5c451;
   vertical-align: text-bottom;
   cursor: help;
 }

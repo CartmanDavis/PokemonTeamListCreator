@@ -16,6 +16,7 @@
     "fast-png": "^8.0.0",
     "jpeg-js": "^0.4.4",
     "jspdf": "^4.2.1",
+    "lucide-react": "^1.50.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router": "^8.4.0",

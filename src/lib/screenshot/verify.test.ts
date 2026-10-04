@@ -89,9 +89,9 @@ describe('verifyTeam', () => {
       { name: 'Garchomp', label: 'Item', expected: 'Choice Scarf', found: 'Life Orb', ok: false },
       { name: 'Charizard', label: 'Ability', expected: 'Solar Power', found: 'Blaze', ok: false },
       { name: 'Incineroar', label: 'Move', expected: 'Knock Off', found: 'Throat Chop', ok: false },
-      { name: 'Sinistcha', label: 'Nature', expected: 'Sassy (+SpD −Spe)', found: 'Relaxed (+Def −Spe)', ok: false },
-      { name: 'Sinistcha', label: 'Def', expected: '7', found: '7', expectedDetail: '133', foundDetail: '146', ok: false },
-      { name: 'Sinistcha', label: 'SpD', expected: '27', found: '27', expectedDetail: '139', foundDetail: '127', ok: false },
+      { name: 'Sinistcha', label: 'Nature', expected: 'Sassy', found: 'Relaxed', ok: false },
+      { name: 'Sinistcha', label: 'Def', expected: '7', found: '7', expectedDetail: '133', foundDetail: '146', foundNature: '+', ok: false },
+      { name: 'Sinistcha', label: 'SpD', expected: '27', found: '27', expectedDetail: '139', foundDetail: '127', expectedNature: '+', ok: false },
       { name: 'Venusaur', label: 'SpA', expected: '30', found: '32', expectedDetail: '150', foundDetail: '152', ok: false },
     ])
   })
@@ -132,6 +132,27 @@ describe('verifyTeam', () => {
       name: 'Venusaur',
       checks: [{ label: 'Pokémon', expected: 'Venusaur', found: 'Not in the game', ok: false }],
     })
+  })
+})
+
+describe('nature marks', () => {
+  it('marks the stats each nature raises and lowers', () => {
+    const reports = verifyTeam(team(paste.replace('Relaxed Nature', 'Sassy Nature')), { stats: statsScreen })
+    const marks = (label: string) => {
+      const check = reports[3].checks.find((c) => c.label === label)
+      return [check?.expectedNature, check?.foundNature]
+    }
+    expect(marks('Def')).toEqual([undefined, '+'])
+    expect(marks('SpD')).toEqual(['+', undefined])
+    expect(marks('Spe')).toEqual(['−', '−'])
+  })
+
+  it('fails a stat whose nature mark differs even when the numbers match', () => {
+    const stats = structuredClone(statsScreen)
+    // The game's arrows move to Atk but the stats shown stay the same.
+    stats[3].nature = { ...stats[3].nature, up: 'atk' }
+    const atk = verifyTeam(team(paste), { stats })[3].checks.find((c) => c.label === 'Atk')
+    expect(atk).toMatchObject({ expectedNature: undefined, foundNature: '+', ok: false })
   })
 })
 
