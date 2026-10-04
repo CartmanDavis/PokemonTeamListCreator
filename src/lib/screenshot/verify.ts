@@ -145,7 +145,7 @@ function nameChecks(poke: Pokemon, shownAs: string, species: string[] | undefine
   const nickname: Check = { label: 'Nickname', expected: poke.nickname ?? '', found: nicknameShown, ok: true }
   if (poke.nickname && nicknameShown && !showsNickname) nickname.note = 'Nickname does not match paste'
 
-  const because = `The screenshot shows the nickname "${shownAs}" instead of the species`
+  const usesNickname = 'In-game screenshot uses a nickname'
   let pokemon: Check
   if (showsSpecies && !showsNickname) {
     pokemon = { label: 'Pokémon', expected: poke.name, found: shownAs, ok: true }
@@ -160,7 +160,7 @@ function nameChecks(poke: Pokemon, shownAs: string, species: string[] | undefine
       expected: poke.name,
       found,
       ok: species.includes(poke.name),
-      note: `${because}, so it was inferred from its stats`,
+      note: usesNickname,
     }
   } else if (showsNickname) {
     pokemon = {
@@ -168,7 +168,7 @@ function nameChecks(poke: Pokemon, shownAs: string, species: string[] | undefine
       expected: poke.name,
       found: poke.name,
       ok: true,
-      note: `${because}, so it was inferred from the matching nickname in your paste`,
+      note: usesNickname,
     }
   } else {
     pokemon = { label: 'Pokémon', expected: poke.name, found: 'Unknown (add the Stats screenshot to confirm the species)', ok: false }
