@@ -1,4 +1,4 @@
-import { CircleAlert } from 'lucide-react'
+import { CircleAlert, CircleCheck } from 'lucide-react'
 import { useId, useState, type ReactNode } from 'react'
 import { useTeamCheck } from '../hooks/useTeamCheck'
 import type { Check, PokemonReport } from '../lib/screenshot/verify'
@@ -71,7 +71,14 @@ export function TeamCheckResults({ reports }: { reports: PokemonReport[] }) {
   const problems = reports.some((report) => report.checks.some((c) => !c.ok))
   return (
     <>
-      {problems && <Alert title="There were issues found with your in-game team" />}
+      {problems ? (
+        <Alert title="There were issues found with your in-game team" />
+      ) : (
+        <p className="team-check-valid" role="status">
+          <CircleCheck size={20} aria-hidden="true" />
+          Your team is valid. This tool can make mistakes. Be sure to double check!
+        </p>
+      )}
       <div className="team-check-results">
         {reports.map((report, i) => (
           <section key={i} className="team-check-pokemon" aria-label={report.name}>
